@@ -18,7 +18,7 @@ import java.util.*;
 
 public class TextFileController {
 
-    private final static Map<String, TextFile> temporarilyOpenedFiles = new HashMap<>();
+    private final static Map<UUID, TextFile> temporarilyOpenedFiles = new HashMap<>();
 
     public boolean thereIsAnUnsavedFile() {
         File path = new File(System.getenv("ProgramFiles") + "\\RedTextEditor\\temp-files\\");
@@ -81,7 +81,7 @@ public class TextFileController {
     }
 
     public static void addFile(TextFile textFile) {
-        temporarilyOpenedFiles.put(textFile.uuid().toString(), textFile);
+        temporarilyOpenedFiles.put(textFile.uuid(), textFile);
     }
 
     public static TextFile requestTextFile(String id) {
