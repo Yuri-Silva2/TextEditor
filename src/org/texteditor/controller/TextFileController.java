@@ -46,7 +46,7 @@ public class TextFileController {
         Tab tab = new Tab(textFile.name());
 
         tab.setContent(new TextArea(textFile.text()));
-        tab.setId(textFile.uuid().toString());
+        tab.setId(textFile.uuid());
         tabs.add(tab);
 
         tabPane.getSelectionModel().select(tab);
