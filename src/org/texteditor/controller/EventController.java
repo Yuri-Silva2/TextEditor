@@ -13,11 +13,14 @@ public class EventController {
     private final Stage stage;
     private final TabController tabController;
     private final FileController fileController;
+    private final AlertController alertController;
 
-    public EventController(Stage stage, TabController tabController, FileController fileController) {
+    public EventController(Stage stage, TabController tabController,
+                           FileController fileController, AlertController alertController) {
         this.stage = stage;
         this.tabController = tabController;
         this.fileController = fileController;
+        this.alertController = alertController;
     }
 
     public void onNewTabEvent(MenuItem menuItem) {
@@ -81,18 +84,7 @@ public class EventController {
                         textArea.getText());
 
             } else {
-//                Stage alertStage = new Stage();
-//
-//                AlertPane alertPane = new AlertPane();
-//                alertPane.defineStage(alertStage);
-//                alertPane.configure();
-//
-//                Scene scene = new Scene(alertPane, 300, 180);
-//                alertStage.setScene(scene);
-//
-//                alertStage.initStyle(StageStyle.UNDECORATED);
-//                alertStage.initModality(Modality.APPLICATION_MODAL);
-//                alertStage.show();
+                alertController.showAlertPane();
             }
         });
     }

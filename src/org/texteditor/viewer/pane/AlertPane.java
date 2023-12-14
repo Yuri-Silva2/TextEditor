@@ -6,15 +6,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import org.texteditor.controller.EventController;
 
 public class AlertPane extends BorderPane {
 
-    private final EventController eventController;
-
-    public AlertPane(EventController eventController) {
+    public AlertPane() {
         super();
-        this.eventController = eventController;
     }
 
     public void configure() {
@@ -67,9 +63,9 @@ public class AlertPane extends BorderPane {
         Button saveButton = createButton("Salvar", 14);
         Button doNotSaveButton = createButton("Não salvar", 114);
         Button cancelButton = createButton("Cancelar", 214);
-        eventController.onAlertPaneSaveEvent(saveButton);
-        eventController.onAlertPaneDoNotSaveEvent(doNotSaveButton);
-        eventController.onAlertPaneCancelEvent(cancelButton);
+        onAlertPaneSaveEvent(saveButton);
+        onAlertPaneDoNotSaveEvent(doNotSaveButton);
+        onAlertPaneCancelEvent(cancelButton);
 
         anchorPaneBottom.getChildren().addAll(saveButton, doNotSaveButton, cancelButton);
 
@@ -83,5 +79,17 @@ public class AlertPane extends BorderPane {
         button.setPrefWidth(72);
         button.setPrefHeight(25);
         return button;
+    }
+
+    private void onAlertPaneSaveEvent(Button button) {
+
+    }
+
+    private void onAlertPaneDoNotSaveEvent(Button button) {
+
+    }
+
+    private void onAlertPaneCancelEvent(Button button) {
+
     }
 }

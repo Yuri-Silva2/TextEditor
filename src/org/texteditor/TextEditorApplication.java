@@ -6,10 +6,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.texteditor.controller.EventController;
-import org.texteditor.controller.FileController;
-import org.texteditor.controller.ModelController;
-import org.texteditor.controller.TabController;
+import org.texteditor.controller.*;
 import org.texteditor.model.TextFile;
 import org.texteditor.viewer.pane.TextEditorPane;
 
@@ -34,7 +31,7 @@ public class TextEditorApplication extends Application {
 
             tabController = new TabController(primaryStage);
             EventController eventController = new EventController(primaryStage,
-                    tabController, new FileController());
+                    tabController, new FileController(), new AlertController(primaryStage));
 
             TextEditorPane textEditorPane = new TextEditorPane(eventController);
             textEditorPane.configure();
