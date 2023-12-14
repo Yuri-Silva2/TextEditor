@@ -2,8 +2,7 @@ package org.texteditor.controller;
 
 import javafx.application.Platform;
 import javafx.scene.control.*;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import javafx.stage.*;
 import org.texteditor.model.TextFile;
 
 import java.io.File;
@@ -12,15 +11,18 @@ import java.util.UUID;
 public class EventController {
 
     private final Stage stage;
+    private final TabController tabController;
+    private final FileController fileController;
 
-    public EventController(Stage stage) {
+    public EventController(Stage stage, TabController tabController, FileController fileController) {
         this.stage = stage;
+        this.tabController = tabController;
+        this.fileController = fileController;
     }
 
-    public void setNewGuideEvent(MenuItem menuItem) {
+    public void onNewTabEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
-            TextFileController tfc = new TextFileController();
-            TabPane tabPane = tfc.lookupTabpane(stage);
+            TabPane tabPane = tabController.lookupTabPane();
 
             int number = tabPane.getTabs().size() + 1;
             String name = "Sem título (" + number + ")";
@@ -28,59 +30,112 @@ public class EventController {
             TextFile textFile = new TextFile(UUID.randomUUID(),
                     name, null, "", false);
 
-            TextFileController.addFile(textFile);
-            tfc.createNewTab(textFile, tabPane);
+            ModelController.addTextFile(textFile);
+
+            Tab newTab = tabController.createNewTab(textFile.name(),
+                    textFile.uuid().toString(), textFile.text());
+
+            tabController.addTabInListAndRequestFocus(newTab, tabPane);
         });
     }
 
-    public void openEvent(MenuItem menuItem) {
+    public void onOpenEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Selecionar Arquivos");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+            File selectedFile = fileController.createFileChooserAndGetFile(stage,
+                    "Selecionar Arquivo");
 
-            File file = fileChooser.showOpenDialog(stage);
-            if (file != null) {
-                TextFileController tfc = new TextFileController();
-                TabPane tabPane = tfc.lookupTabpane(stage);
+            if (selectedFile == null) return;
 
-                TextFile textFile = tfc.readFile(file);
+            String content = fileController.readFile(selectedFile);
 
-                TextFileController.addFile(textFile);
-                tfc.createNewTab(textFile, tabPane);
-            }
+            TextFile textFile = new TextFile(UUID.randomUUID(),
+                    selectedFile.getName(), selectedFile.getPath(),
+                    content, true);
+
+            ModelController.addTextFile(textFile);
+
+            Tab newTab = tabController.createNewTab(textFile.name(),
+                    textFile.uuid().toString(), textFile.text());
+
+            TabPane tabPane = tabController.lookupTabPane();
+
+            tabController.addTabInListAndRequestFocus(newTab, tabPane);
         });
     }
 
-    public void saveEvent(MenuItem menuItem) {
+    public void onSaveEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
-            TextFileController tfc = new TextFileController();
-            TabPane tabPane =  tfc.lookupTabpane(stage);
+            TabPane tabPane =  tabController.lookupTabPane();
+            Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
-            Tab tab = tabPane.getSelectionModel().getSelectedItem();
-            TextFile textFile = TextFileController.requestTextFile(tab.getId());
+            TextArea textArea = (TextArea) selectedTab.getContent();
+            String tabId = selectedTab.getId();
+
+            TextFile textFile = ModelController.requestTextFile(tabId);
 
             if (textFile.saved()) {
+                ModelController.updateTextFile(textFile.uuid().toString(),
+                        textArea.getText());
+
+                fileController.writeFile(textFile.filePath(),
+                        textArea.getText());
 
             } else {
-
+//                Stage alertStage = new Stage();
+//
+//                AlertPane alertPane = new AlertPane();
+//                alertPane.defineStage(alertStage);
+//                alertPane.configure();
+//
+//                Scene scene = new Scene(alertPane, 300, 180);
+//                alertStage.setScene(scene);
+//
+//                alertStage.initStyle(StageStyle.UNDECORATED);
+//                alertStage.initModality(Modality.APPLICATION_MODAL);
+//                alertStage.show();
             }
         });
     }
 
-    public void saveAsEvent(MenuItem menuItem) {
+    public void onSaveAsEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
 
         });
     }
 
-    public void saveAllEvent(MenuItem menuItem) {
+    public void onSaveAllEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
 
         });
     }
 
-    public void setQuitEvent(MenuItem menuItem) {
+    public void onQuitEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> Platform.exit());
+    }
+
+    public void onAlertPaneSaveEvent(Button button) {
+        button.setOnMouseClicked(mouseEvent -> {
+//            FileChooser fileChooser = new FileChooser();
+//            fileChooser.setTitle("Salvar Arquivo");
+//            fileChooser.getExtensionFilters().add(extension);
+//
+//            File selectedFile = fileChooser.showSaveDialog(stage);
+//            if (selectedFile == null) return;
+//
+//            TextFileController.updateTextFile(id, selectedFile.getPath(), textArea.getText());
+//            tfc.writeFile(TextFileController.requestTextFile(id));
+        });
+    }
+
+    public void onAlertPaneDoNotSaveEvent(Button button) {
+        button.setOnMouseClicked(mouseEvent -> {
+
+        });
+    }
+
+    public void onAlertPaneCancelEvent(Button button) {
+        button.setOnMouseClicked(e -> {
+            stage.close();
+        });
     }
 }
