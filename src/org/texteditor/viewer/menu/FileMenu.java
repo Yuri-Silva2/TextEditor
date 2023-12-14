@@ -2,49 +2,68 @@ package org.texteditor.viewer.menu;
 
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.stage.Stage;
 import org.texteditor.controller.EventController;
-import org.texteditor.viewer.CustomViewer;
 
-public class FileMenu extends Menu implements CustomViewer {
+public class FileMenu extends Menu {
 
-    private Stage stage;
+    private final EventController eventController;
 
-    public FileMenu() {
+    public FileMenu(EventController eventController) {
         super("Arquivo");
+        this.eventController = eventController;
     }
 
-    @Override
     public void configure() {
-        EventController hc = new EventController(stage);
-
-        MenuItem newGuide = new MenuItem("Nova guia");
-        MenuItem open = new MenuItem("Abrir");
-        MenuItem save = new MenuItem("Salvar");
-        MenuItem saveAs = new MenuItem("Salvar como");
-        MenuItem saveAll = new MenuItem("Salvar tudo");
-        MenuItem quit = new MenuItem("Sair");
-
-        hc.setNewGuideEvent(newGuide);
-        hc.openEvent(open);
-        hc.saveEvent(save);
-        hc.saveAsEvent(saveAs);
-        hc.saveAllEvent(saveAll);
-        hc.setQuitEvent(quit);
-
-        getItems().addAll(
-                newGuide,
-                open,
-                save,
-                saveAs,
-                saveAll,
-                quit
-        );
-
         setId("file-menu");
+
+        MenuItem newItem = createNewItem();
+        MenuItem openItem = createOpenItem();
+        MenuItem saveItem = createSaveItem();
+        MenuItem saveAsItem = createSaveAsItem();
+        MenuItem saveAllItem = createSaveAllItem();
+        MenuItem quitItem = createQuitItem();
+
+        addComponents(newItem, openItem, saveItem,
+                saveAsItem, saveAllItem, quitItem);
     }
 
-    public void defineStage(Stage stage) {
-        this.stage = stage;
+    private MenuItem createNewItem() {
+        MenuItem newItem = new MenuItem("Nova guia");
+        eventController.onNewTabEvent(newItem);
+        return newItem;
+    }
+
+    private MenuItem createOpenItem() {
+        MenuItem openItem = new MenuItem("Abrir");
+        eventController.onOpenEvent(openItem);
+        return openItem;
+    }
+
+    private MenuItem createSaveItem() {
+        MenuItem saveItem = new MenuItem("Salvar");
+        eventController.onSaveEvent(saveItem);
+        return saveItem;
+    }
+
+    private MenuItem createSaveAsItem() {
+        MenuItem saveAsItem = new MenuItem("Salvar como");
+        eventController.onSaveAsEvent(saveAsItem);
+        return saveAsItem;
+    }
+
+    private MenuItem createSaveAllItem() {
+        MenuItem saveAllItem = new MenuItem("Salvar tudo");
+        eventController.onSaveAllEvent(saveAllItem);
+        return saveAllItem;
+    }
+
+    private MenuItem createQuitItem() {
+        MenuItem quitItem = new MenuItem("Sair");
+        eventController.onQuitEvent(quitItem);
+        return quitItem;
+    }
+
+    private void addComponents(MenuItem... menuItems) {
+        getItems().addAll(menuItems);
     }
 }

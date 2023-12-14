@@ -1,48 +1,70 @@
 package org.texteditor.viewer.pane;
 
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import org.texteditor.viewer.CustomViewer;
+import org.texteditor.controller.EventController;
 import org.texteditor.viewer.menu.EditMenu;
 import org.texteditor.viewer.menu.FileMenu;
 import org.texteditor.viewer.menu.ViewMenu;
 
-public class TextEditorPane extends BorderPane implements CustomViewer {
+public class TextEditorPane extends BorderPane {
 
-    private Stage stage;
+    private final EventController eventController;
 
-    public TextEditorPane() {
+    public TextEditorPane(EventController eventController) {
         super();
+        this.eventController = eventController;
     }
 
-    @Override
     public void configure() {
-        MenuBar menuBar = new MenuBar();
-        menuBar.setId("menu-bar");
+        setId("texteditor-borderpane");
 
-        FileMenu fileMenu = new FileMenu();
-        fileMenu.defineStage(this.stage);
-        fileMenu.configure();
-        EditMenu editMenu = new EditMenu();
-        editMenu.configure();
-        ViewMenu viewMenu = new ViewMenu();
-        viewMenu.configure();
+        MenuBar menuBar = createMenuBar();
 
-        menuBar.getMenus().addAll(
-                fileMenu,
-                editMenu,
-                viewMenu
-        );
+        FileMenu fileMenu = createFileMenu();
+        EditMenu editMenu = createEditMenu();
+        ViewMenu viewMenu = createViewMenu();
 
-        WriterPane writerPane = new WriterPane();
-        writerPane.configure();
+        addComponents(menuBar, fileMenu, editMenu, viewMenu);
+
+        WriterPane writerPane = createWriterPane();
 
         setTop(menuBar);
         setCenter(writerPane);
     }
 
-    public void defineStage(Stage stage) {
-        this.stage = stage;
+    private MenuBar createMenuBar() {
+        MenuBar menuBar = new MenuBar();
+        menuBar.setId("menu-bar");
+        return menuBar;
+    }
+
+    private FileMenu createFileMenu() {
+        FileMenu fileMenu = new FileMenu(eventController);
+        fileMenu.configure();
+        return fileMenu;
+    }
+
+    private EditMenu createEditMenu() {
+        EditMenu editMenu = new EditMenu();
+        editMenu.configure();
+        return editMenu;
+    }
+
+    private ViewMenu createViewMenu() {
+        ViewMenu viewMenu = new ViewMenu(eventController);
+        viewMenu.configure();
+        return viewMenu;
+    }
+
+    private void addComponents(MenuBar menuBar, Menu... menus) {
+        menuBar.getMenus().addAll(menus);
+    }
+
+    private WriterPane createWriterPane() {
+        WriterPane writerPane = new WriterPane();
+        writerPane.configure();
+        return writerPane;
     }
 }
