@@ -63,7 +63,7 @@ public class FileMenu extends Menu {
         return quitItem;
     }
 
-    public void onNewTabEvent(MenuItem menuItem) {
+    private void onNewTabEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
             TabPane tabPane = tabController.lookupTabPane();
 
@@ -82,7 +82,7 @@ public class FileMenu extends Menu {
         });
     }
 
-    public void onOpenEvent(MenuItem menuItem) {
+    private void onOpenEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
             File selectedFile = fileController.createFileChooserAndGetFile(stage,
                     "Selecionar Arquivo");
@@ -106,7 +106,7 @@ public class FileMenu extends Menu {
         });
     }
 
-    public void onSaveEvent(MenuItem menuItem) {
+    private void onSaveEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
             TabPane tabPane =  tabController.lookupTabPane();
             Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
@@ -129,19 +129,19 @@ public class FileMenu extends Menu {
         });
     }
 
-    public void onSaveAsEvent(MenuItem menuItem) {
+    private void onSaveAsEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
 
         });
     }
 
-    public void onSaveAllEvent(MenuItem menuItem) {
+    private void onSaveAllEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
 
         });
     }
 
-    public void onQuitEvent(MenuItem menuItem) {
+    private void onQuitEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> Platform.exit());
     }
 
