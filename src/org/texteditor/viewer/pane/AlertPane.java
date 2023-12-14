@@ -82,14 +82,28 @@ public class AlertPane extends BorderPane {
     }
 
     private void onAlertPaneSaveEvent(Button button) {
-
+        button.setOnMouseClicked(mouseEvent -> {
+//            FileChooser fileChooser = new FileChooser();
+//            fileChooser.setTitle("Salvar Arquivo");
+//            fileChooser.getExtensionFilters().add(extension);
+//
+//            File selectedFile = fileChooser.showSaveDialog(stage);
+//            if (selectedFile == null) return;
+//
+//            TextFileController.updateTextFile(id, selectedFile.getPath(), textArea.getText());
+//            tfc.writeFile(TextFileController.requestTextFile(id));
+        });
     }
 
     private void onAlertPaneDoNotSaveEvent(Button button) {
+        button.setOnMouseClicked(mouseEvent -> {
 
+        });
     }
 
     private void onAlertPaneCancelEvent(Button button) {
-
+        button.setOnMouseClicked(e -> {
+            stage.close();
+        });
     }
 }
