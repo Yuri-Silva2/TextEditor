@@ -2,16 +2,11 @@ package org.texteditor.viewer.menu;
 
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.stage.Stage;
-import org.texteditor.controller.EventController;
 
 public class ZoomMenu extends Menu {
 
-    private final EventController eventController;
-
-    public ZoomMenu(EventController eventController) {
+    public ZoomMenu() {
         super("Zoom");
-        this.eventController = eventController;
     }
 
     public void configure() {

@@ -19,6 +19,12 @@ public class FileController {
 
     private static final Logger logger = Logger.getLogger(FileController.class.getName());
 
+    private final Stage stage;
+
+    public FileController(Stage stage) {
+        this.stage = stage;
+    }
+
     public boolean thereIsAnUnsavedFile() {
         File path = new File(TEMP_FILES_PATH);
         return path.exists() &&
@@ -26,12 +32,11 @@ public class FileController {
     }
 
     public void writeFile(String filePath, String fileText) {
-        File file = new File(filePath);
-
-        try (FileWriter fileWriter = new FileWriter(file, false)) {
+        try {
+            File file = new File(filePath);
+            FileWriter fileWriter = new FileWriter(file, false);
             fileWriter.write(fileText);
-//            file.setReadOnly();
-//            Acesso negado
+            fileWriter.close();
 
         } catch (IOException e) {
             logger.log(Level.WARNING, e.toString());
@@ -41,10 +46,11 @@ public class FileController {
     public void writeFile(String id, String extension, String fileText) {
         File file = new File(TEMP_FILES_PATH + id + extension);
 
-        try (FileWriter fileWriter = new FileWriter(file, false)) {
+        try {
+            FileWriter fileWriter = new FileWriter(file, false);
             fileWriter.write(fileText);
-//            file.setReadOnly();
-//              Acesso negado
+            fileWriter.close();
+            if (file.setExecutable(false)) return;
 
         } catch (IOException e) {
             logger.log(Level.WARNING, e.toString());
@@ -72,7 +78,7 @@ public class FileController {
         return "";
     }
 
-    public File createFileChooserAndGetFile(Stage stage, String content) {
+    public File createFileChooserAndGetFile(String content) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(content);
         fileChooser.getExtensionFilters().add(FILES_EXTENSION);
@@ -84,8 +90,3 @@ public class FileController {
         return null;
     }
 }
-
-        /*
-        return new TextFile(UUID.randomUUID(), file.getName(),
-                file.getPath(), builder.toString(), true);
-         */

@@ -6,11 +6,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class AlertPane extends BorderPane {
 
-    public AlertPane() {
+    private final Stage stage;
+
+    public AlertPane(Stage stage) {
         super();
+        this.stage = stage;
     }
 
     public void configure() {

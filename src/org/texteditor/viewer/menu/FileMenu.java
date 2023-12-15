@@ -1,16 +1,29 @@
 package org.texteditor.viewer.menu;
 
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import org.texteditor.controller.EventController;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import org.texteditor.controller.FileController;
+import org.texteditor.controller.ModelController;
+import org.texteditor.controller.TabController;
+import org.texteditor.model.TextFile;
+import org.texteditor.viewer.pane.AlertPane;
+
+import java.io.File;
+import java.util.UUID;
 
 public class FileMenu extends Menu {
 
-    private final EventController eventController;
+    private final FileController fileController;
+    private final TabController tabController;
 
-    public FileMenu(EventController eventController) {
+    public FileMenu(TabController tabController, FileController fileController) {
         super("Arquivo");
-        this.eventController = eventController;
+        this.tabController = tabController;
+        this.fileController = fileController;
     }
 
     public void configure() {
@@ -84,7 +97,7 @@ public class FileMenu extends Menu {
 
     private void onOpenEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
-            File selectedFile = fileController.createFileChooserAndGetFile(stage,
+            File selectedFile = fileController.createFileChooserAndGetFile(
                     "Selecionar Arquivo");
 
             if (selectedFile == null) return;
@@ -120,11 +133,22 @@ public class FileMenu extends Menu {
                 ModelController.updateTextFile(textFile.uuid().toString(),
                         textArea.getText());
 
+                System.out.println(textFile.filePath());
                 fileController.writeFile(textFile.filePath(),
                         textArea.getText());
 
             } else {
-                alertController.showAlertPane();
+                Stage stage = new Stage();
+
+                AlertPane alertPane = new AlertPane(stage);
+                alertPane.configure();
+
+                Scene scene = new Scene(alertPane, 300, 180);
+
+                stage.setScene(scene);
+                stage.initStyle(StageStyle.UNDECORATED);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.show();
             }
         });
     }

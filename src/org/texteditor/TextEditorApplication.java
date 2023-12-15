@@ -19,6 +19,7 @@ public class TextEditorApplication extends Application {
     private static final int INITIAL_SCENE_HEIGHT = 860;
 
     private TabController tabController;
+    private FileController fileController;
 
     public static void main(String[] args) {
         launch(args);
@@ -30,10 +31,10 @@ public class TextEditorApplication extends Application {
             primaryStage.setTitle(APPLICATION_TITLE);
 
             tabController = new TabController(primaryStage);
-            EventController eventController = new EventController(primaryStage,
-                    tabController, new FileController(), new AlertController(primaryStage));
+            fileController = new FileController(primaryStage);
 
-            TextEditorPane textEditorPane = new TextEditorPane(eventController);
+            TextEditorPane textEditorPane = new TextEditorPane(tabController,
+                    fileController);
             textEditorPane.configure();
 
             Scene scene = new Scene(textEditorPane, INITIAL_SCENE_WIDTH, INITIAL_SCENE_HEIGHT);
@@ -49,11 +50,8 @@ public class TextEditorApplication extends Application {
     }
 
     private void checkSituation(Stage stage) {
-        FileController fileController = new FileController();
-
         if (fileController.thereIsAnUnsavedFile()) {
             addNewTypingArea(stage);
-
         }
     }
 
