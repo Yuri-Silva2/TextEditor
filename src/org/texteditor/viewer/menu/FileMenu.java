@@ -3,7 +3,6 @@ package org.texteditor.viewer.menu;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.texteditor.controller.FileController;
@@ -91,6 +90,30 @@ public class FileMenu extends Menu {
             Tab newTab = tabController.createNewTab(textFile.name(),
                     textFile.uuid().toString(), textFile.text());
 
+            newTab.setOnCloseRequest(event -> {
+                Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+                String tabId = selectedTab.getId();
+
+                TextFile tf = ModelController.requestTextFile(tabId);
+
+                if (!tf.saved()) {
+                    event.consume();
+
+                    Stage newStage = new Stage();
+
+                    AlertPane alertPane = new AlertPane(newStage,
+                            new FileController(newStage),
+                            tabController);
+                    alertPane.configure();
+
+                    Scene scene = new Scene(alertPane, 300, 180);
+
+                    newStage.setScene(scene);
+                    newStage.initStyle(StageStyle.UNDECORATED);
+                    newStage.show();
+                }
+            });
+
             tabController.addTabInListAndRequestFocus(newTab, tabPane);
         });
     }
@@ -121,7 +144,7 @@ public class FileMenu extends Menu {
 
     private void onSaveEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
-            TabPane tabPane =  tabController.lookupTabPane();
+            TabPane tabPane = tabController.lookupTabPane();
             Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
             TextArea textArea = (TextArea) selectedTab.getContent();
@@ -133,35 +156,61 @@ public class FileMenu extends Menu {
                 ModelController.updateTextFile(textFile.uuid().toString(),
                         textArea.getText());
 
-                System.out.println(textFile.filePath());
                 fileController.writeFile(textFile.filePath(),
                         textArea.getText());
 
             } else {
-                Stage stage = new Stage();
+                File selectedFile = fileController.createFileChooserAndSaveFile(
+                        "Salvar arquivo");
+                if (selectedFile == null) return;
 
-                AlertPane alertPane = new AlertPane(stage);
-                alertPane.configure();
+                ModelController.updateTextFile(tabId, selectedFile.getPath(),
+                        textArea.getText());
 
-                Scene scene = new Scene(alertPane, 300, 180);
-
-                stage.setScene(scene);
-                stage.initStyle(StageStyle.UNDECORATED);
-                stage.initModality(Modality.APPLICATION_MODAL);
-                stage.show();
+                fileController.writeFile(selectedFile.getPath(),
+                        textArea.getText());
             }
         });
     }
 
     private void onSaveAsEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
+            TabPane tabPane = tabController.lookupTabPane();
+            Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
+            TextArea textArea = (TextArea) selectedTab.getContent();
+            String tabId = selectedTab.getId();
+
+            File selectedFile = fileController.createFileChooserAndSaveFile(
+                    "Salvar arquivo");
+            if (selectedFile == null) return;
+
+            ModelController.updateTextFile(tabId, selectedFile.getPath(),
+                    textArea.getText());
+
+            fileController.writeFile(selectedFile.getPath(),
+                    textArea.getText());
         });
     }
 
     private void onSaveAllEvent(MenuItem menuItem) {
         menuItem.setOnAction(e -> {
+            TabPane tabPane = tabController.lookupTabPane();
 
+            tabPane.getTabs().forEach(tab -> {
+                TextArea textArea = (TextArea) tab.getContent();
+                String tabId = tab.getId();
+
+                TextFile textFile = ModelController.requestTextFile(tabId);
+
+                if (textFile.saved()) {
+                    ModelController.updateTextFile(textFile.uuid().toString(),
+                            textArea.getText());
+
+                    fileController.writeFile(textFile.filePath(),
+                            textArea.getText());
+                }
+            });
         });
     }
 

@@ -2,7 +2,8 @@ package org.texteditor.controller;
 
 import org.texteditor.model.TextFile;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModelController {
 

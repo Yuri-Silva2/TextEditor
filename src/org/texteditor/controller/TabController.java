@@ -1,5 +1,6 @@
 package org.texteditor.controller;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;

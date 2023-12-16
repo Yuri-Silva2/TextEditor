@@ -5,9 +5,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.layout.BorderPane;
 import org.texteditor.controller.FileController;
 import org.texteditor.controller.TabController;
-import org.texteditor.viewer.menu.EditMenu;
 import org.texteditor.viewer.menu.FileMenu;
-import org.texteditor.viewer.menu.ViewMenu;
 
 public class TextEditorPane extends BorderPane {
 
@@ -26,10 +24,8 @@ public class TextEditorPane extends BorderPane {
         MenuBar menuBar = createMenuBar();
 
         FileMenu fileMenu = createFileMenu();
-        EditMenu editMenu = createEditMenu();
-        ViewMenu viewMenu = createViewMenu();
 
-        addComponents(menuBar, fileMenu, editMenu, viewMenu);
+        addComponents(menuBar, fileMenu);
 
         WriterPane writerPane = createWriterPane();
 
@@ -47,18 +43,6 @@ public class TextEditorPane extends BorderPane {
         FileMenu fileMenu = new FileMenu(tabController, fileController);
         fileMenu.configure();
         return fileMenu;
-    }
-
-    private EditMenu createEditMenu() {
-        EditMenu editMenu = new EditMenu();
-        editMenu.configure();
-        return editMenu;
-    }
-
-    private ViewMenu createViewMenu() {
-        ViewMenu viewMenu = new ViewMenu();
-        viewMenu.configure();
-        return viewMenu;
     }
 
     private WriterPane createWriterPane() {

@@ -1,20 +1,35 @@
 package org.texteditor.viewer.pane;
 
+import javafx.application.Platform;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.texteditor.controller.FileController;
+import org.texteditor.controller.ModelController;
+import org.texteditor.controller.TabController;
+import org.texteditor.model.TextFile;
+
+import java.io.File;
 
 public class AlertPane extends BorderPane {
 
+    private final FileController fileController;
+    private final TabController tabController;
+
     private final Stage stage;
 
-    public AlertPane(Stage stage) {
+    public AlertPane(Stage stage, FileController fileController, TabController tabController) {
         super();
         this.stage = stage;
+        this.fileController = fileController;
+        this.tabController = tabController;
     }
 
     public void configure() {
@@ -67,6 +82,7 @@ public class AlertPane extends BorderPane {
         Button saveButton = createButton("Salvar", 14);
         Button doNotSaveButton = createButton("Não salvar", 114);
         Button cancelButton = createButton("Cancelar", 214);
+
         onAlertPaneSaveEvent(saveButton);
         onAlertPaneDoNotSaveEvent(doNotSaveButton);
         onAlertPaneCancelEvent(cancelButton);
@@ -87,21 +103,51 @@ public class AlertPane extends BorderPane {
 
     private void onAlertPaneSaveEvent(Button button) {
         button.setOnMouseClicked(mouseEvent -> {
-//            FileChooser fileChooser = new FileChooser();
-//            fileChooser.setTitle("Salvar Arquivo");
-//            fileChooser.getExtensionFilters().add(extension);
-//
-//            File selectedFile = fileChooser.showSaveDialog(stage);
-//            if (selectedFile == null) return;
-//
-//            TextFileController.updateTextFile(id, selectedFile.getPath(), textArea.getText());
-//            tfc.writeFile(TextFileController.requestTextFile(id));
+            File selectedFile = fileController.createFileChooserAndSaveFile(
+                    "Salvar arquivo");
+
+            if (selectedFile == null) return;
+
+            TabPane tabPane = tabController.lookupTabPane();
+            Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+
+            TextArea textArea = (TextArea) selectedTab.getContent();
+            String tabId = selectedTab.getId();
+
+            TextFile textFile = ModelController.requestTextFile(tabId);
+
+            if (!textFile.saved()) {
+                ModelController.updateTextFile(tabId, selectedFile.getPath(),
+                        textArea.getText());
+
+                fileController.writeFile(selectedFile.getPath(),
+                        textArea.getText());
+            }
+
+            stage.close();
+
+            if (selectedTab.getTabPane().getTabs().size() == 1) {
+                Platform.exit();
+
+            } else {
+                selectedTab.getTabPane().getTabs().remove(selectedTab);
+            }
         });
     }
 
     private void onAlertPaneDoNotSaveEvent(Button button) {
         button.setOnMouseClicked(mouseEvent -> {
+            TabPane tabPane = tabController.lookupTabPane();
+            Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
+            stage.close();
+
+            if (selectedTab.getTabPane().getTabs().size() == 1) {
+                Platform.exit();
+
+            } else {
+                selectedTab.getTabPane().getTabs().remove(selectedTab);
+            }
         });
     }
 

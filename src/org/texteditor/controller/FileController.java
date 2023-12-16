@@ -7,7 +7,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,7 +53,8 @@ public class FileController {
             FileWriter fileWriter = new FileWriter(file, false);
             fileWriter.write(fileText);
             fileWriter.close();
-            if (file.setExecutable(false)) return;
+            if (file.setExecutable(false)) {
+            }
 
         } catch (IOException e) {
             logger.log(Level.WARNING, e.toString());
@@ -84,6 +88,14 @@ public class FileController {
         fileChooser.getExtensionFilters().add(FILES_EXTENSION);
 
         return fileChooser.showOpenDialog(stage);
+    }
+
+    public File createFileChooserAndSaveFile(String content) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(content);
+        fileChooser.getExtensionFilters().add(FILES_EXTENSION);
+
+        return fileChooser.showSaveDialog(stage);
     }
 
     public Map<String, String> readFiles() {

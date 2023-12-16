@@ -1,13 +1,17 @@
 package org.texteditor;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.texteditor.controller.*;
+import org.texteditor.controller.FileController;
+import org.texteditor.controller.ModelController;
+import org.texteditor.controller.TabController;
 import org.texteditor.model.TextFile;
+import org.texteditor.viewer.pane.AlertPane;
 import org.texteditor.viewer.pane.TextEditorPane;
 
 import java.util.UUID;
@@ -38,12 +42,15 @@ public class TextEditorApplication extends Application {
             textEditorPane.configure();
 
             Scene scene = new Scene(textEditorPane, INITIAL_SCENE_WIDTH, INITIAL_SCENE_HEIGHT);
+            scene.getStylesheets().add("style.css");
             primaryStage.setScene(scene);
 
+            primaryStage.centerOnScreen();
             primaryStage.initStyle(StageStyle.DECORATED);
             primaryStage.show();
 
             checkSituation(primaryStage);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -69,15 +76,30 @@ public class TextEditorApplication extends Application {
         Tab newTab = tabController.createNewTab(textFile.name(),
                 textFile.uuid().toString(), textFile.text());
 
+        newTab.setOnCloseRequest(event -> {
+            Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+            String tabId = selectedTab.getId();
+
+            TextFile tf = ModelController.requestTextFile(tabId);
+
+            if (!tf.saved()) {
+                event.consume();
+
+                Stage newStage = new Stage();
+
+                AlertPane alertPane = new AlertPane(newStage,
+                        new FileController(newStage),
+                        tabController);
+                alertPane.configure();
+
+                Scene scene = new Scene(alertPane, 300, 180);
+
+                newStage.setScene(scene);
+                newStage.initStyle(StageStyle.UNDECORATED);
+                newStage.show();
+            }
+        });
+
         tabController.addTabInListAndRequestFocus(newTab, tabPane);
     }
 }
-
-/*
-https://stackoverflow.com/questions/10966776/reading-and-writing-json-file-java
-https://stackoverflow.com/questions/15786129/converting-java-objects-to-json-with-jackson
-https://github.com/JavaCodeJunkie/javafx/blob/f5d7cd29fb0570846cbdb5f898998f54e758f748/WindowEvents/src/com/javacodejunkie/MainView.java
-https://stackoverflow.com/questions/30276935/how-to-get-the-selected-tab-from-the-tabpane-with-javafx#:~:text=As%20with%20many%20JavaFX%20controls,index%20of%20the%20selected%20tab.
-https://github.com/JavaCodeJunkie/javafx/blob/master/FileChooserDemo/src/com/javacodejunkie/MainView.java
-https://docs.oracle.com/javafx/2/events/filters.htm
- */
