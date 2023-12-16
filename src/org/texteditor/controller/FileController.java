@@ -14,53 +14,62 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/*
+    Controller class for managing file operations in the text editor.
+ */
+
 public class FileController {
 
+    // Path for temporary files directory
     private final String TEMP_FILES_PATH = System.getenv("ProgramFiles") + "\\RedTextEditor\\temp-files\\";
+
+    // Extension filter for file chooser
     private final FileChooser.ExtensionFilter FILES_EXTENSION =
             new FileChooser.ExtensionFilter("Text Files", "*.txt");
 
+    // Logger for logging warnings
     private static final Logger logger = Logger.getLogger(FileController.class.getName());
 
+    // Reference to the JavaFX stage
     private final Stage stage;
 
+    // Constructor for FileController
     public FileController(Stage stage) {
         this.stage = stage;
     }
 
+    // Check if there is an unsaved file in the temporary files directory
     public boolean thereIsAnUnsavedFile() {
         File path = new File(TEMP_FILES_PATH);
         return path.exists() &&
                 Arrays.stream(Objects.requireNonNull(path.listFiles())).toList().isEmpty();
     }
 
+    // Write text to a file specified by the filePath
     public void writeFile(String filePath, String fileText) {
-        try {
-            File file = new File(filePath);
-            FileWriter fileWriter = new FileWriter(file, false);
+        File file = new File(filePath);
+
+        try (FileWriter fileWriter = new FileWriter(file, false)) {
             fileWriter.write(fileText);
-            fileWriter.close();
 
         } catch (IOException e) {
             logger.log(Level.WARNING, e.toString());
         }
     }
 
+    // Write text to a file with a specified id, extension, and content
     public void writeFile(String id, String extension, String fileText) {
         File file = new File(TEMP_FILES_PATH + id + extension);
 
-        try {
-            FileWriter fileWriter = new FileWriter(file, false);
+        try (FileWriter fileWriter = new FileWriter(file, false)) {
             fileWriter.write(fileText);
-            fileWriter.close();
-            if (file.setExecutable(false)) {
-            }
 
         } catch (IOException e) {
             logger.log(Level.WARNING, e.toString());
         }
     }
 
+    // Read the contents of a file and return as a string
     public String readFile(File file) {
         try {
             StringBuilder stringBuilder = new StringBuilder();
@@ -82,6 +91,7 @@ public class FileController {
         return "";
     }
 
+    // Create a file chooser dialog for opening files and return the selected file
     public File createFileChooserAndGetFile(String content) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(content);
@@ -90,6 +100,7 @@ public class FileController {
         return fileChooser.showOpenDialog(stage);
     }
 
+    // Create a file chooser dialog for opening files and return the selected file
     public File createFileChooserAndSaveFile(String content) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(content);
@@ -98,6 +109,7 @@ public class FileController {
         return fileChooser.showSaveDialog(stage);
     }
 
+    // Placeholder method for reading multiple files (not implemented)
     public Map<String, String> readFiles() {
         return null;
     }
