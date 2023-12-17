@@ -7,7 +7,7 @@ O Aplicativo é um editor de texto baseado em JavaFX que permite aos usuários c
 
 - Criar, abrir e salvar arquivos de texto
 - Interface com abas para trabalhar com vários arquivos simultaneamente
-- Alerta para salvar alterações não salvas ao fehcar uma aba
+- Alerta para salvar alterações não salvas ao fechar uma aba
 - Interface responsiva e amigável ao usuário
 
 ## Futuros novos recursos
