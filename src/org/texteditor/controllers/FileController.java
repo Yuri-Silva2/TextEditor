@@ -1,4 +1,4 @@
-package org.texteditor.controller;
+package org.texteditor.controllers;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -14,38 +14,42 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*
-    Controller class for managing file operations in the text editor.
+/**
+ * Controller class for managing file operations in the text editor.
  */
 
 public class FileController {
 
-    // Path for temporary files directory
     private final String TEMP_FILES_PATH = System.getenv("ProgramFiles") + "\\RedTextEditor\\temp-files\\";
 
-    // Extension filter for file chooser
     private final FileChooser.ExtensionFilter FILES_EXTENSION =
             new FileChooser.ExtensionFilter("Text Files", "*.txt");
 
-    // Logger for logging warnings
     private static final Logger logger = Logger.getLogger(FileController.class.getName());
 
-    // Reference to the JavaFX stage
     private final Stage stage;
 
-    // Constructor for FileController
     public FileController(Stage stage) {
         this.stage = stage;
     }
 
-    // Check if there is an unsaved file in the temporary files directory
+    /**
+     * Checks if there is an unsaved file in the temporary files' directory.
+     *
+     * @return True if there is as unsaved file, false otherwise.
+     */
     public boolean thereIsAnUnsavedFile() {
         File path = new File(TEMP_FILES_PATH);
         return path.exists() &&
                 Arrays.stream(Objects.requireNonNull(path.listFiles())).toList().isEmpty();
     }
 
-    // Write text to a file specified by the filePath
+    /**
+     * Writes the given text to a file specified by the filePath.
+     *
+     * @param filePath The path of the file to write.
+     * @param fileText The text to be written to the file.
+     */
     public void writeFile(String filePath, String fileText) {
         File file = new File(filePath);
 
@@ -57,7 +61,13 @@ public class FileController {
         }
     }
 
-    // Write text to a file with a specified id, extension, and content
+    /**
+     * Writes the given text to a file with a specified id, extension, and content.
+     *
+     * @param id        The identifier for the file.
+     * @param extension The file extension.
+     * @param fileText  The text to be written to the file.
+     */
     public void writeFile(String id, String extension, String fileText) {
         File file = new File(TEMP_FILES_PATH + id + extension);
 
@@ -69,7 +79,12 @@ public class FileController {
         }
     }
 
-    // Read the contents of a file and return as a string
+    /**
+     * Reads the contents of a file and returns them as a string.
+     *
+     * @param file The file to read.
+     * @return The contents of the file as a string.
+     */
     public String readFile(File file) {
         try {
             StringBuilder stringBuilder = new StringBuilder();
@@ -91,7 +106,12 @@ public class FileController {
         return "";
     }
 
-    // Create a file chooser dialog for opening files and return the selected file
+    /**
+     * Creates a file chooser dialog for opening files and returns the selected file.
+     *
+     * @param content The title/content of the file chooser dialog.
+     * @return The selected file or null if no file is chosen.
+     */
     public File createFileChooserAndGetFile(String content) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(content);
@@ -100,7 +120,12 @@ public class FileController {
         return fileChooser.showOpenDialog(stage);
     }
 
-    // Create a file chooser dialog for opening files and return the selected file
+    /**
+     * Creates a file chooser dialog for saving files and returns the selected file.
+     *
+     * @param content The title/content of the file chooser dialog.
+     * @return The selected file or null if no file is chosen.
+     */
     public File createFileChooserAndSaveFile(String content) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(content);

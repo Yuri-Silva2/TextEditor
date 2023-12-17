@@ -1,18 +1,17 @@
 package org.texteditor;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.texteditor.controller.FileController;
-import org.texteditor.controller.ModelController;
-import org.texteditor.controller.TabController;
-import org.texteditor.model.TextFile;
-import org.texteditor.viewer.pane.AlertPane;
-import org.texteditor.viewer.pane.TextEditorPane;
+import org.texteditor.controllers.FileController;
+import org.texteditor.controllers.ModelController;
+import org.texteditor.controllers.TabController;
+import org.texteditor.models.TextFile;
+import org.texteditor.viewers.pane.AlertPane;
+import org.texteditor.viewers.pane.TextEditorPane;
 
 import java.util.UUID;
 
@@ -49,20 +48,20 @@ public class TextEditorApplication extends Application {
             primaryStage.initStyle(StageStyle.DECORATED);
             primaryStage.show();
 
-            checkSituation(primaryStage);
+            checkSituation();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void checkSituation(Stage stage) {
+    private void checkSituation() {
         if (fileController.thereIsAnUnsavedFile()) {
-            addNewTypingArea(stage);
+            addNewTypingArea();
         }
     }
 
-    private void addNewTypingArea(Stage stage) {
+    private void addNewTypingArea() {
         TabPane tabPane = tabController.lookupTabPane();
 
         int number = tabPane.getTabs().size() + 1;
@@ -100,6 +99,7 @@ public class TextEditorApplication extends Application {
             }
         });
 
-        tabController.addTabInListAndRequestFocus(newTab, tabPane);
+        tabController.addTab(newTab, tabPane);
+        tabController.selectedAndFocusTab(newTab, tabPane);
     }
 }
