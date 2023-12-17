@@ -24,24 +24,31 @@ public class TextEditorApplication extends Application {
     private TabController tabController;
     private FileController fileController;
 
+    /**
+     * Main method to launch the JavaFX application.
+     *
+     * @param args Command-line arguments (not used in this case)
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * Overrides thew star() method of the Application class.
+     *
+     * @param primaryStage The main stage (window) of the application
+     */
     @Override
     public void start(Stage primaryStage) {
         try {
-            primaryStage.setTitle(APPLICATION_TITLE);
-
-            tabController = new TabController(primaryStage);
-            fileController = new FileController(primaryStage);
+            initializeControllers(primaryStage);
 
             TextEditorPane textEditorPane = new TextEditorPane(tabController,
                     fileController);
             textEditorPane.configure();
 
             Scene scene = new Scene(textEditorPane, INITIAL_SCENE_WIDTH, INITIAL_SCENE_HEIGHT);
-            scene.getStylesheets().add("style.css");
+            primaryStage.setTitle(APPLICATION_TITLE);
             primaryStage.setScene(scene);
 
             primaryStage.centerOnScreen();
@@ -55,12 +62,28 @@ public class TextEditorApplication extends Application {
         }
     }
 
+    /**
+     * Initializes the controllers used by the application.
+     *
+     * @param stage The main stage of the application
+     */
+    private void initializeControllers(Stage stage) {
+        tabController = new TabController(stage);
+        fileController = new FileController(stage);
+    }
+
+    /**
+     * Checks the file situation and takes appropriate actions.
+     */
     private void checkSituation() {
         if (fileController.thereIsAnUnsavedFile()) {
             addNewTypingArea();
         }
     }
 
+    /**
+     * Adds a new typing area (tab) to the TabPane.
+     */
     private void addNewTypingArea() {
         TabPane tabPane = tabController.lookupTabPane();
 
@@ -74,32 +97,45 @@ public class TextEditorApplication extends Application {
 
         Tab newTab = tabController.createNewTab(textFile.name(),
                 textFile.uuid().toString(), textFile.text());
-
-        newTab.setOnCloseRequest(event -> {
-            Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
-            String tabId = selectedTab.getId();
-
-            TextFile tf = ModelController.requestTextFile(tabId);
-
-            if (!tf.saved()) {
-                event.consume();
-
-                Stage newStage = new Stage();
-
-                AlertPane alertPane = new AlertPane(newStage,
-                        new FileController(newStage),
-                        tabController);
-                alertPane.configure();
-
-                Scene scene = new Scene(alertPane, 300, 180);
-
-                newStage.setScene(scene);
-                newStage.initStyle(StageStyle.UNDECORATED);
-                newStage.show();
-            }
-        });
+        configureCloseEvent(newTab, tabPane);
 
         tabController.addTab(newTab, tabPane);
         tabController.selectedAndFocusTab(newTab, tabPane);
+    }
+
+    /**
+     * Configures the close event for a Tab, prompting the user to save unsaved changes.
+     *
+     * @param tab The tab to configure the close event for
+     * @param tabPane The TabPane to get tab
+     */
+    private void configureCloseEvent(Tab tab, TabPane tabPane) {
+        tab.setOnCloseRequest(event -> {
+            Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+            String tabId = selectedTab.getId();
+
+            TextFile textFile = ModelController.requestTextFile(tabId);
+
+            if (!textFile.saved()) {
+                event.consume();
+                showUnsavedChangesAlert();
+            }
+        });
+    }
+
+    /**
+     * Displays an alert for unsaved changes.
+     */
+    private void showUnsavedChangesAlert() {
+        Stage newStage = new Stage();
+        AlertPane alertPane = new AlertPane(newStage, new FileController(newStage),
+                tabController);
+        alertPane.configure();
+
+        Scene scene = new Scene(alertPane, 300, 180);
+
+        newStage.setScene(scene);
+        newStage.initStyle(StageStyle.UNDECORATED);
+        newStage.show();
     }
 }
