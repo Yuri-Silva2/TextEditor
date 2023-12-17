@@ -14,6 +14,7 @@ O Aplicativo é um editor de texto baseado em JavaFX que permite aos usuários c
 
 - Salvamento automático das guias já salvas a cada X segundos
 - Arquivos não salvos considerados temporários em memória para possível reabertura
+- Teclas de atalho
 - Layout personalizável
 
 ## Como Começar
