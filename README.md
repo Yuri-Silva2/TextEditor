@@ -42,7 +42,7 @@ cd text-editor
 
 ```bash
 javac -d out src/org/texteditor/*.java src/org/texteditor/controllers/*.java src/org/texteditor/models/*.java src/org/texteditor/viewers/menu/*.java src/org/texteditor/viewers/pane/*.java
-java --module-path /caminho/para/javafx-sdk-16/lib --add-modules javafx.controls,javafx.fxml -cp out org.texteditor.TextEditorApplication
+java --module-path /caminho/para/javafx-sdk-21/lib --add-modules javafx.controls,javafx.fxml -cp out org.texteditor.TextEditorApplication
 ```
 
 ## Uso
