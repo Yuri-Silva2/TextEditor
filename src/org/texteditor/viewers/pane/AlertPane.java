@@ -126,12 +126,10 @@ public class AlertPane extends BorderPane {
 
         stage.close();
 
-        if (selectedTab.getTabPane().getTabs().size() == 1) {
+        if (selectedTab.getTabPane().getTabs().size() == 1)
             Platform.exit();
-
-        } else {
+         else
             selectedTab.getTabPane().getTabs().remove(selectedTab);
-        }
     }
 
     /**
@@ -161,12 +159,10 @@ public class AlertPane extends BorderPane {
 
         stage.close();
 
-        if (selectedTab.getTabPane().getTabs().size() == 1) {
+        if (selectedTab.getTabPane().getTabs().size() == 1)
             Platform.exit();
-
-        } else {
+        else
             selectedTab.getTabPane().getTabs().remove(selectedTab);
-        }
     }
 
     /**

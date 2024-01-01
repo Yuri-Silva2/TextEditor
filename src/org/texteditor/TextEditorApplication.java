@@ -76,9 +76,8 @@ public class TextEditorApplication extends Application {
      * Checks the file situation and takes appropriate actions.
      */
     private void checkSituation() {
-        if (fileController.thereIsAnUnsavedFile()) {
+        if (fileController.thereIsAnUnsavedFile())
             addNewTypingArea();
-        }
     }
 
     /**

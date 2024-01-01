@@ -24,42 +24,16 @@ public class TextEditorPane extends BorderPane {
 
     /**
      * Configures the layout and components of the TextEditorPane.
-     * Sets and ID, creates a MenuBar, FileMenu, and WriterPane, and adds them to the BorderPane.
+     * Sets and ID, creates a UtilitiesPane and WriterPane, and adds them to the BorderPane.
      */
     public void configure() {
         setId("texteditor-borderpane");
 
-        MenuBar menuBar = createMenuBar();
-        FileMenu fileMenu = createFileMenu();
-
-        addComponents(menuBar, fileMenu);
-
+        UtilitiesPane utilitiesPane = createUtilitiesPane();
         WriterPane writerPane = createWriterPane();
 
-        setTop(menuBar);
+        setTop(utilitiesPane);
         setCenter(writerPane);
-    }
-
-    /**
-     * Creates and returns a new MenuBar.
-     *
-     * @return The created MenuBar
-     */
-    private MenuBar createMenuBar() {
-        MenuBar menuBar = new MenuBar();
-        menuBar.setId("menu-bar");
-        return menuBar;
-    }
-
-    /**
-     * Creates and returns a new FileMenu, configured with the provided controllers.
-     *
-     * @return The created FileMenu
-     */
-    private FileMenu createFileMenu() {
-        FileMenu fileMenu = new FileMenu(tabController, fileController);
-        fileMenu.configure();
-        return fileMenu;
     }
 
     /**
@@ -73,13 +47,9 @@ public class TextEditorPane extends BorderPane {
         return writerPane;
     }
 
-    /**
-     * Adds the specified Menu components to the provided MenuBar.
-     *
-     * @param menuBar   The MenuBar to which the menus will be added
-     * @param menus     The Menu components to be added to the MenuBar.
-     */
-    private void addComponents(MenuBar menuBar, Menu... menus) {
-        menuBar.getMenus().addAll(menus);
+    private UtilitiesPane createUtilitiesPane() {
+        UtilitiesPane utilitiesPane = new UtilitiesPane(tabController, fileController);
+        utilitiesPane.configure();
+        return utilitiesPane;
     }
 }
