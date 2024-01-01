@@ -18,7 +18,7 @@ import java.util.UUID;
  * A menu class responsible for handling file-related operations in the text editor.
  * This class encapsulates functionality related to creating, opening, saving and quiting tabs.
  */
-public class FileMenu extends Menu {
+public class FileMenu extends Menu implements CustomMenu {
 
     private final FileController fileController;
     private final TabController tabController;
@@ -32,6 +32,7 @@ public class FileMenu extends Menu {
     /**
      * Configures the menu items and their associated actions.
      */
+    @Override
     public void configure() {
         setId("file-menu");
 
@@ -71,7 +72,8 @@ public class FileMenu extends Menu {
         TabPane tabPane = tabController.lookupTabPane();
         Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
-        if (selectedTab != null) saveFileAs(selectedTab);
+        if (selectedTab != null)
+            saveFileAs(selectedTab);
     }
 
     /**
@@ -82,7 +84,8 @@ public class FileMenu extends Menu {
         TabPane tabPane = tabController.lookupTabPane();
         Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
-        if (selectedTab != null) saveFile(selectedTab);
+        if (selectedTab != null)
+            saveFile(selectedTab);
     }
 
     /**
@@ -93,9 +96,8 @@ public class FileMenu extends Menu {
         File selectedFile = fileController.createFileChooserAndGetFile(
                 "Selecionar Arquivo");
 
-        if (selectedFile != null) {
+        if (selectedFile != null)
             openFile(selectedFile);
-        }
     }
 
     /**
