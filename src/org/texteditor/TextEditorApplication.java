@@ -13,6 +13,7 @@ import org.texteditor.models.TextFile;
 import org.texteditor.viewers.pane.AlertPane;
 import org.texteditor.viewers.pane.TextEditorPane;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class TextEditorApplication extends Application {
@@ -48,6 +49,7 @@ public class TextEditorApplication extends Application {
             textEditorPane.configure();
 
             Scene scene = new Scene(textEditorPane, INITIAL_SCENE_WIDTH, INITIAL_SCENE_HEIGHT);
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles/style.css")).toExternalForm());
             primaryStage.setTitle(APPLICATION_TITLE);
             primaryStage.setScene(scene);
 

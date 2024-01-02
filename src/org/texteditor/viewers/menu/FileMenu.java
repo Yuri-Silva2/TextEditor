@@ -3,8 +3,12 @@ package org.texteditor.viewers.menu;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.texteditor.TextEditorUtils;
 import org.texteditor.controllers.FileController;
 import org.texteditor.controllers.ModelController;
 import org.texteditor.controllers.TabController;
@@ -36,12 +40,35 @@ public class FileMenu extends Menu implements CustomMenu {
     public void configure() {
         setId("file-menu");
 
-        MenuItem newItem = createNewItem("Nova guia", this::onNewTabEvent);
-        MenuItem openItem = createNewItem("Abrir", this::onOpenEvent);
-        MenuItem saveItem = createNewItem("Salvar", this::onSaveEvent);
-        MenuItem saveAsItem = createNewItem("Salvar como", this::onSaveAsEvent);
-        MenuItem saveAllItem = createNewItem("Salvar tudo", this::onSaveAllEvent);
-        MenuItem quitItem = createNewItem("Sair", this::onQuitEvent);
+        MenuItem newItem = createNewItem("Nova guia    ", this::onNewTabEvent);
+        newItem.setAccelerator(new KeyCodeCombination(KeyCode.N,
+                KeyCombination.CONTROL_DOWN));
+        newItem.setGraphic(TextEditorUtils.createIcon("media/add.png"));
+
+        MenuItem openItem = createNewItem("Abrir    ", this::onOpenEvent);
+        openItem.setAccelerator(new KeyCodeCombination(KeyCode.O,
+                KeyCombination.CONTROL_DOWN));
+        openItem.setGraphic(TextEditorUtils.createIcon("media/open.png"));
+
+        MenuItem saveItem = createNewItem("Salvar    ", this::onSaveEvent);
+        saveItem.setAccelerator(new KeyCodeCombination(KeyCode.S,
+                KeyCombination.CONTROL_DOWN));
+        saveItem.setGraphic(TextEditorUtils.createIcon("media/save.png"));
+
+        MenuItem saveAsItem = createNewItem("Salvar como    ", this::onSaveAsEvent);
+        saveAsItem.setAccelerator(new KeyCodeCombination(KeyCode.S,
+                KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
+        saveAsItem.setGraphic(TextEditorUtils.createIcon("media/save_as.png"));
+
+        MenuItem saveAllItem = createNewItem("Salvar tudo    ", this::onSaveAllEvent);
+        saveAllItem.setAccelerator(new KeyCodeCombination(KeyCode.S,
+                KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
+        saveAllItem.setGraphic(TextEditorUtils.createIcon("media/save.png"));
+
+        MenuItem quitItem = createNewItem("Sair    ", this::onQuitEvent);
+        quitItem.setAccelerator(new KeyCodeCombination(KeyCode.F4,
+                KeyCombination.ALT_DOWN));
+        quitItem.setGraphic(TextEditorUtils.createIcon("media/quit.png"));
 
         addComponents(newItem, openItem, saveItem,
                 saveAsItem, saveAllItem, quitItem);
@@ -120,6 +147,7 @@ public class FileMenu extends Menu implements CustomMenu {
      */
     private MenuItem createNewItem(String content, Runnable eventHandler) {
         MenuItem newItem = new MenuItem(content);
+        newItem.setId("new-item");
         newItem.setOnAction(actionEvent -> eventHandler.run());
         return newItem;
     }

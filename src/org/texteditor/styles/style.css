@@ -1,0 +1,32 @@
+* {
+    -fx-text-fill: #000000;
+}
+
+#text-menu-bar {
+    -fx-background-color: transparent;
+}
+
+#file-menu:hover, #edit-menu:hover,
+#config-menu:hover, #format-menu:hover,
+#help-menu:hover, #language-menu:hover,
+#locate-menu:hover, #tools-menu:hover,
+#view-menu:hover {
+    -fx-background-color: transparent;
+}
+
+#new-item:focused, #file-menu, 
+#edit-menu, #config-menu, 
+#format-menu, #help-menu, 
+#language-menu, #locate-menu, 
+#tools-menu, #view-menu {
+    -fx-background-color: transparent;
+}
+
+#new-item:pressed, #file-menu, 
+#edit-menu, #config-menu, 
+#format-menu, #help-menu, 
+#language-menu, #locate-menu, 
+#tools-menu, #view-menu {
+    -fx-background-color: transparent;
+}
+
