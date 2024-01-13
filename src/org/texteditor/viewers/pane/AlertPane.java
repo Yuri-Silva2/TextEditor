@@ -128,7 +128,7 @@ public class AlertPane extends BorderPane {
 
         if (selectedTab.getTabPane().getTabs().size() == 1)
             Platform.exit();
-         else
+        else
             selectedTab.getTabPane().getTabs().remove(selectedTab);
     }
 
@@ -168,10 +168,10 @@ public class AlertPane extends BorderPane {
     /**
      * Creates a button with specified text, layoutX, and event handler.
      *
-     * @param text          The text for the button
-     * @param layoutX       The layout X position
-     * @param eventHandler  The event handler for the button
-     * @return              The created button
+     * @param text         The text for the button
+     * @param layoutX      The layout X position
+     * @param eventHandler The event handler for the button
+     * @return The created button
      */
     private Button createButton(String text, double layoutX, Runnable eventHandler) {
         Button button = new Button(text);

@@ -1,11 +1,8 @@
 package org.texteditor.viewers.pane;
 
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.layout.BorderPane;
 import org.texteditor.controllers.FileController;
 import org.texteditor.controllers.TabController;
-import org.texteditor.viewers.menu.FileMenu;
 
 /**
  * The TextEditorPane class represents the main pane for the text editor application,

@@ -1,7 +1,9 @@
 # Text Editor Application
 
 ## Visão Geral
-O Aplicativo é um editor de texto baseado em JavaFX que permite aos usuários criar, editar e salvar arquivos de texto usando uma interface com abas.
+
+O Aplicativo é um editor de texto baseado em JavaFX que permite aos usuários criar, editar e salvar arquivos de texto
+usando uma interface com abas.
 
 ## Recursos
 

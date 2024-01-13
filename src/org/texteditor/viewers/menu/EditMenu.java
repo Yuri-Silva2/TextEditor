@@ -1,16 +1,19 @@
 package org.texteditor.viewers.menu;
 
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import org.texteditor.TextEditorUtils;
+import org.texteditor.controllers.TabController;
 
 public class EditMenu extends Menu implements CustomMenu {
 
-    public EditMenu() {
+    private final TabController tabController;
+
+    public EditMenu(TabController tabController) {
         super("Editar");
+        this.tabController = tabController;
     }
 
     /**
@@ -83,7 +86,11 @@ public class EditMenu extends Menu implements CustomMenu {
     }
 
     private void onSelectAllEvent() {
+        TabPane tabPane = tabController.lookupTabPane();
+        Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
+        if (selectedTab != null)
+            ((TextArea) selectedTab.getContent()).selectAll();
     }
 
     /**

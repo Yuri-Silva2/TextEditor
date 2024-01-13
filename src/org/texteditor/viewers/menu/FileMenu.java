@@ -1,22 +1,20 @@
 package org.texteditor.viewers.menu;
 
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.texteditor.TextEditorUtils;
 import org.texteditor.controllers.FileController;
 import org.texteditor.controllers.ModelController;
 import org.texteditor.controllers.TabController;
 import org.texteditor.models.TextFile;
-import org.texteditor.viewers.pane.AlertPane;
 
 import java.io.File;
 import java.util.UUID;
+
+import static org.texteditor.TextEditorUtils.createAlertPane;
 
 /**
  * A menu class responsible for handling file-related operations in the text editor.
@@ -192,8 +190,8 @@ public class FileMenu extends Menu implements CustomMenu {
     /**
      * Internally handles the saving of a file, considering whether it is a new save or a "Save As" operation.
      *
-     * @param tab       Tab associated with the file to be saved
-     * @param saveAs    Indicates whether it is a "Save As" operation
+     * @param tab    Tab associated with the file to be saved
+     * @param saveAs Indicates whether it is a "Save As" operation
      */
     private void saveFileInternal(Tab tab, boolean saveAs) {
         TextArea textArea = (TextArea) tab.getContent();
@@ -219,9 +217,9 @@ public class FileMenu extends Menu implements CustomMenu {
     /**
      * Creates a new tab with the specified name file path, and content.
      *
-     * @param name      Name of the new tab
-     * @param filePath  File path associated with the new tab
-     * @param content   Content to be displayed in the new tab
+     * @param name     Name of the new tab
+     * @param filePath File path associated with the new tab
+     * @param content  Content to be displayed in the new tab
      */
     private void createTab(String name, String filePath, String content) {
         TextFile textFile = new TextFile(UUID.randomUUID(), name, filePath, content, true);
@@ -275,24 +273,13 @@ public class FileMenu extends Menu implements CustomMenu {
         String tabId = tab.getId();
         TextFile textFile = ModelController.requestTextFile(tabId);
 
-        if (!textFile.saved()) showUnsavedChangesDialog(tab);
+        if (!textFile.saved()) showUnsavedChangesDialog();
     }
 
     /**
      * Shows an alert dialog for unsaved changes when closing a tab.
-     *
-     * @param tab Tab associated with the unsaved changes
      */
-    private void showUnsavedChangesDialog(Tab tab) {
-        Stage newStage = new Stage();
-        AlertPane alertPane = new AlertPane(newStage, new FileController(newStage),
-                tabController);
-        alertPane.configure();
-
-        Scene scene = new Scene(alertPane, 300, 180);
-
-        newStage.setScene(scene);
-        newStage.initStyle(StageStyle.UNDECORATED);
-        newStage.show();
+    private void showUnsavedChangesDialog() {
+        createAlertPane(tabController);
     }
 }

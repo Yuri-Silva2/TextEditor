@@ -1,0 +1,2 @@
+1- Revisar a condição estática da classe ModelController
+2- Testar fechamento de abas

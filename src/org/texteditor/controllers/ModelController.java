@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class ModelController {
 
-    private final static Map<String, TextFile> temporarilyOpenedFiles = new HashMap<>();
+    private final static Map<String, TextFile> openedFiles = new HashMap<>();
 
     /**
      * Adds a text file to the collection of temporarily opened files.
@@ -18,8 +18,8 @@ public class ModelController {
      * @param textFile The text file to be added.
      */
     public static void addTextFile(TextFile textFile) {
-        temporarilyOpenedFiles.computeIfAbsent(textFile.uuid().toString(),
-                key -> textFile);
+        openedFiles.putIfAbsent(textFile.uuid().toString(),
+                textFile);
     }
 
     /**
@@ -29,37 +29,37 @@ public class ModelController {
      * @return The requested text file or null if not found.
      */
     public static TextFile requestTextFile(String id) {
-        return temporarilyOpenedFiles.get(id);
+        return openedFiles.get(id);
     }
 
     /**
      * Updates the content of a text file in the collection.
      *
-     * @param id The ID of the text file.
+     * @param id   The ID of the text file.
      * @param text The new content of the text file.
      */
     public static void updateTextFile(String id, String text) {
         TextFile textFile = requestTextFile(id);
 
-        TextFile newTextFile = new TextFile(textFile.uuid(),
+        TextFile toUpdateTextFile = new TextFile(textFile.uuid(),
                 textFile.name(), textFile.filePath(), text, textFile.saved());
 
-        temporarilyOpenedFiles.replace(id, textFile, newTextFile);
+        openedFiles.replace(id, textFile, toUpdateTextFile);
     }
 
     /**
      * Updates the content and file path of a text file in the collection.
      *
-     * @param id The ID of the text file.
+     * @param id       The ID of the text file.
      * @param filePath The new file path of the text file.
-     * @param text The new content of the text file.
+     * @param text     The new content of the text file.
      */
     public static void updateTextFile(String id, String filePath, String text) {
         TextFile textFile = requestTextFile(id);
 
-        TextFile newTextFile = new TextFile(textFile.uuid(),
+        TextFile toUpdateTextFile = new TextFile(textFile.uuid(),
                 textFile.name(), filePath, text, true);
 
-        temporarilyOpenedFiles.replace(id, textFile, newTextFile);
+        openedFiles.replace(id, textFile, toUpdateTextFile);
     }
 }

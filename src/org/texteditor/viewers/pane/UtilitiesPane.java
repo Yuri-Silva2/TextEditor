@@ -74,7 +74,7 @@ public class UtilitiesPane extends AnchorPane {
      * @return The created EditMenu
      */
     private EditMenu createEditMenu() {
-        EditMenu editMenu = new EditMenu();
+        EditMenu editMenu = new EditMenu(tabController);
         editMenu.configure();
         return editMenu;
     }
@@ -141,8 +141,8 @@ public class UtilitiesPane extends AnchorPane {
     /**
      * Adds the specified Menu components to the provided MenuBar.
      *
-     * @param menuBar   The MenuBar to which the menus will be added
-     * @param menus     The Menu components to be added to the MenuBar.
+     * @param menuBar The MenuBar to which the menus will be added
+     * @param menus   The Menu components to be added to the MenuBar.
      */
     private void addComponents(MenuBar menuBar, Menu... menus) {
         menuBar.getMenus().addAll(menus);

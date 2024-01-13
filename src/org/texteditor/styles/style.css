@@ -14,18 +14,18 @@
     -fx-background-color: transparent;
 }
 
-#new-item:focused, #file-menu, 
-#edit-menu, #config-menu, 
-#format-menu, #help-menu, 
-#language-menu, #locate-menu, 
+#new-item:focused, #file-menu,
+#edit-menu, #config-menu,
+#format-menu, #help-menu,
+#language-menu, #locate-menu,
 #tools-menu, #view-menu {
     -fx-background-color: transparent;
 }
 
-#new-item:pressed, #file-menu, 
-#edit-menu, #config-menu, 
-#format-menu, #help-menu, 
-#language-menu, #locate-menu, 
+#new-item:pressed, #file-menu,
+#edit-menu, #config-menu,
+#format-menu, #help-menu,
+#language-menu, #locate-menu,
 #tools-menu, #view-menu {
     -fx-background-color: transparent;
 }

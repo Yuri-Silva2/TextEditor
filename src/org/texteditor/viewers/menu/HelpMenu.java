@@ -14,7 +14,7 @@ public class HelpMenu extends Menu implements CustomMenu {
     public void configure() {
         setId("help-menu");
 
-        MenuItem updateItem = createNewItem("Atualizar...    ", this::onUpdateEvent);
+        MenuItem updateItem = createNewItem(this::onUpdateEvent);
         updateItem.setGraphic(TextEditorUtils.createIcon("media/update.png"));
 
         addComponents(updateItem);
@@ -29,8 +29,8 @@ public class HelpMenu extends Menu implements CustomMenu {
      *
      * @return MenuItem for creating a new item
      */
-    private MenuItem createNewItem(String content, Runnable eventHandler) {
-        MenuItem newItem = new MenuItem(content);
+    private MenuItem createNewItem(Runnable eventHandler) {
+        MenuItem newItem = new MenuItem("Atualizar...    ");
         newItem.setId("new-item");
         newItem.setOnAction(actionEvent -> eventHandler.run());
         return newItem;

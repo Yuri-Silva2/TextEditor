@@ -23,10 +23,10 @@ public class TabController {
     /**
      * Creates a new tab with the specified name, ID, and content.
      *
-     * @param tabName   The name of the tab.
-     * @param id        The ID of the tab.
-     * @param content   The initial content of the tab.
-     * @return  The created tab.
+     * @param tabName The name of the tab.
+     * @param id      The ID of the tab.
+     * @param content The initial content of the tab.
+     * @return The created tab.
      */
     public Tab createNewTab(String tabName, String id, String content) {
         Tab tab = new Tab(tabName);
@@ -38,8 +38,8 @@ public class TabController {
     /**
      * Adds a tab to the list of tabs.
      *
-     * @param tab       The tab to be added.
-     * @param tabPane   The TabPane to which the tab will be added.
+     * @param tab     The tab to be added.
+     * @param tabPane The TabPane to which the tab will be added.
      */
     public void addTab(Tab tab, TabPane tabPane) {
         tabPane.getTabs().add(tab);
@@ -48,8 +48,8 @@ public class TabController {
     /**
      * Select and requests focus on its content.
      *
-     * @param tab      The tab to be added.
-     * @param tabPane  The TabPane to which the tab will be added.
+     * @param tab     The tab to be added.
+     * @param tabPane The TabPane to which the tab will be added.
      */
     public void selectedAndFocusTab(Tab tab, TabPane tabPane) {
         tabPane.getSelectionModel().select(tab);

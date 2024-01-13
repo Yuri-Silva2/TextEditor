@@ -10,11 +10,12 @@ import org.texteditor.controllers.FileController;
 import org.texteditor.controllers.ModelController;
 import org.texteditor.controllers.TabController;
 import org.texteditor.models.TextFile;
-import org.texteditor.viewers.pane.AlertPane;
 import org.texteditor.viewers.pane.TextEditorPane;
 
 import java.util.Objects;
 import java.util.UUID;
+
+import static org.texteditor.TextEditorUtils.createAlertPane;
 
 public class TextEditorApplication extends Application {
 
@@ -107,7 +108,7 @@ public class TextEditorApplication extends Application {
     /**
      * Configures the close event for a Tab, prompting the user to save unsaved changes.
      *
-     * @param tab The tab to configure the close event for
+     * @param tab     The tab to configure the close event for
      * @param tabPane The TabPane to get tab
      */
     private void configureCloseEvent(Tab tab, TabPane tabPane) {
@@ -128,15 +129,6 @@ public class TextEditorApplication extends Application {
      * Displays an alert for unsaved changes.
      */
     private void showUnsavedChangesAlert() {
-        Stage newStage = new Stage();
-        AlertPane alertPane = new AlertPane(newStage, new FileController(newStage),
-                tabController);
-        alertPane.configure();
-
-        Scene scene = new Scene(alertPane, 300, 180);
-
-        newStage.setScene(scene);
-        newStage.initStyle(StageStyle.UNDECORATED);
-        newStage.show();
+        createAlertPane(tabController);
     }
 }
