@@ -16,8 +16,11 @@ public class TabController {
 
     private final Stage stage;
 
-    public TabController(Stage stage) {
+    private final HistoricalController historicalController;
+
+    public TabController(Stage stage, HistoricalController historicalController) {
         this.stage = stage;
+        this.historicalController = historicalController;
     }
 
     /**
@@ -32,6 +35,7 @@ public class TabController {
         Tab tab = new Tab(tabName);
         tab.setContent(new TextArea(content));
         tab.setId(id);
+        historicalController.insertHistoric(id, content);
         return tab;
     }
 
@@ -65,5 +69,13 @@ public class TabController {
     public TabPane lookupTabPane() {
         Scene scene = stage.getScene();
         return (TabPane) scene.lookup(WRITER_TABPANE_ID);
+    }
+
+    public void saveTab(String id, String content) {
+        historicalController.updateHistoricContent(id, content);
+    }
+
+    public void quitTab(String id) {
+        historicalController.removeHistoric(id);
     }
 }

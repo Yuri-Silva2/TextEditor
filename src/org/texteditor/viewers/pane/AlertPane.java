@@ -12,7 +12,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.texteditor.controllers.FileController;
-import org.texteditor.controllers.ModelController;
+import org.texteditor.controllers.TextFileController;
 import org.texteditor.controllers.TabController;
 import org.texteditor.models.TextFile;
 
@@ -147,10 +147,10 @@ public class AlertPane extends BorderPane {
         TextArea textArea = (TextArea) selectedTab.getContent();
         String tabId = selectedTab.getId();
 
-        TextFile textFile = ModelController.requestTextFile(tabId);
+        TextFile textFile = TextFileController.requestTextFile(tabId);
 
         if (!textFile.saved()) {
-            ModelController.updateTextFile(tabId, selectedFile.getPath(),
+            TextFileController.updateTextFile(tabId, selectedFile.getPath(),
                     textArea.getText());
 
             fileController.writeFile(selectedFile.getPath(),

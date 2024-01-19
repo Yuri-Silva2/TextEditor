@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Controller class for managing text file operations in the text editor.
  */
-public class ModelController {
+public class TextFileController {
 
     private final static Map<String, TextFile> openedFiles = new HashMap<>();
 

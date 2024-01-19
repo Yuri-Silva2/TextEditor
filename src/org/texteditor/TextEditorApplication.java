@@ -7,7 +7,8 @@ import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.texteditor.controllers.FileController;
-import org.texteditor.controllers.ModelController;
+import org.texteditor.controllers.HistoricalController;
+import org.texteditor.controllers.TextFileController;
 import org.texteditor.controllers.TabController;
 import org.texteditor.models.TextFile;
 import org.texteditor.viewers.pane.TextEditorPane;
@@ -71,7 +72,8 @@ public class TextEditorApplication extends Application {
      * @param stage The main stage of the application
      */
     private void initializeControllers(Stage stage) {
-        tabController = new TabController(stage);
+        HistoricalController historicalController = new HistoricalController();
+        tabController = new TabController(stage, historicalController);
         fileController = new FileController(stage);
     }
 
@@ -79,6 +81,7 @@ public class TextEditorApplication extends Application {
      * Checks the file situation and takes appropriate actions.
      */
     private void checkSituation() {
+        fileController.createDefaultFolder();
         if (fileController.thereIsAnUnsavedFile())
             addNewTypingArea();
     }
@@ -95,7 +98,7 @@ public class TextEditorApplication extends Application {
         TextFile textFile = new TextFile(UUID.randomUUID(),
                 name, null, "", false);
 
-        ModelController.addTextFile(textFile);
+        TextFileController.addTextFile(textFile);
 
         Tab newTab = tabController.createNewTab(textFile.name(),
                 textFile.uuid().toString(), textFile.text());
@@ -116,7 +119,7 @@ public class TextEditorApplication extends Application {
             Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
             String tabId = selectedTab.getId();
 
-            TextFile textFile = ModelController.requestTextFile(tabId);
+            TextFile textFile = TextFileController.requestTextFile(tabId);
 
             if (!textFile.saved()) {
                 event.consume();

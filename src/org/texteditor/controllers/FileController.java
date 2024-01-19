@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 public class FileController {
 
-    private final String TEMP_FILES_PATH = System.getenv("ProgramFiles") + "\\RedTextEditor\\temp-files\\";
+    private final String TEMP_FILES_PATH = System.getProperty("user.home") + "\\Documents\\RedTextEditor\\temp-files\\";
 
     private final FileChooser.ExtensionFilter FILES_EXTENSION =
             new FileChooser.ExtensionFilter("Text Files", "*.txt");
@@ -31,6 +31,12 @@ public class FileController {
 
     public FileController(Stage stage) {
         this.stage = stage;
+    }
+
+    public void createDefaultFolder() {
+        File file = new File(TEMP_FILES_PATH);
+        if (file.exists()) return;
+        file.mkdirs();
     }
 
     /**

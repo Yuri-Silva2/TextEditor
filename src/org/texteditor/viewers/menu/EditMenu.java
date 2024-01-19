@@ -1,11 +1,18 @@
 package org.texteditor.viewers.menu;
 
 import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.input.Clipboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import org.texteditor.TextEditorUtils;
 import org.texteditor.controllers.TabController;
+
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 
 public class EditMenu extends Menu implements CustomMenu {
 
@@ -61,33 +68,98 @@ public class EditMenu extends Menu implements CustomMenu {
                 pasteItem, deleteItem, selectAllItem);
     }
 
+    /**
+     *
+     */
     private void onUndoEvent() {
 
     }
 
+    /**
+     *
+     */
     private void onRemakeEvent() {
-
+    
     }
 
+    /**
+     *
+     */
     private void onCutEvent() {
+        Tab selectedTab = getCurrentSelectTab();
+        if (selectedTab == null) return;
 
+        TextArea textArea = (TextArea) selectedTab.getContent();
+        String selectedText = textArea.getSelectedText();
+
+        textArea.setText(textArea.getText()
+                .replace(selectedText, ""));
+
+        java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit()
+                .getSystemClipboard();
+        StringSelection stringSelection = new StringSelection(selectedText);
+        clipboard.setContents(stringSelection, stringSelection);
     }
 
+    /**
+     *
+     */
     private void onCopyEvent() {
+        Tab selectedTab = getCurrentSelectTab();
+        if (selectedTab == null) return;
 
+        TextArea textArea = (TextArea) selectedTab.getContent();
+        String selectedText = textArea.getSelectedText();
+
+        java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit()
+                .getSystemClipboard();
+        StringSelection stringSelection = new StringSelection(selectedText);
+        clipboard.setContents(stringSelection, stringSelection);
     }
 
+    /**
+     *
+     */
     private void onPasteEvent() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
 
+        Tab selectedTab = getCurrentSelectTab();
+        if (selectedTab == null) return;
+
+        TextArea textArea = (TextArea) selectedTab.getContent();
+
+        if (clipboard.hasString()) {
+            String clipboardText = clipboard.getString();
+            String text = textArea.getText();
+            int position = textArea.getCaretPosition();
+
+            StringBuilder stringBuilder = new StringBuilder(text);
+            stringBuilder.insert(position, clipboardText);
+
+            textArea.setText(stringBuilder.toString());
+            textArea.positionCaret(position);
+        }
     }
 
+    /**
+     *
+     */
     private void onDeleteEvent() {
+        Tab selectedTab = getCurrentSelectTab();
+        if (selectedTab == null) return;
 
+        TextArea textArea = (TextArea) selectedTab.getContent();
+        String selectedText = textArea.getSelectedText();
+
+        textArea.setText(textArea.getText()
+                .replace(selectedText, ""));
     }
 
+    /**
+     *
+     */
     private void onSelectAllEvent() {
-        TabPane tabPane = tabController.lookupTabPane();
-        Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+        Tab selectedTab = getCurrentSelectTab();
 
         if (selectedTab != null)
             ((TextArea) selectedTab.getContent()).selectAll();
@@ -103,6 +175,16 @@ public class EditMenu extends Menu implements CustomMenu {
         newItem.setId("new-item");
         newItem.setOnAction(actionEvent -> eventHandler.run());
         return newItem;
+    }
+
+    /**
+     *
+     * @return Tab
+     */
+
+    private Tab getCurrentSelectTab() {
+        TabPane tabPane = tabController.lookupTabPane();
+        return tabPane.getSelectionModel().getSelectedItem();
     }
 
     /**

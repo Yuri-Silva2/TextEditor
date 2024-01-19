@@ -7,7 +7,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import org.texteditor.TextEditorUtils;
 import org.texteditor.controllers.FileController;
-import org.texteditor.controllers.ModelController;
+import org.texteditor.controllers.TextFileController;
 import org.texteditor.controllers.TabController;
 import org.texteditor.models.TextFile;
 
@@ -86,7 +86,16 @@ public class FileMenu extends Menu implements CustomMenu {
      */
     private void onSaveAllEvent() {
         TabPane tabPane = tabController.lookupTabPane();
-        tabPane.getTabs().forEach(this::saveFile);
+        tabPane.getTabs().forEach(tab -> {
+            if (tab != null) {
+                saveFile(tab);
+
+                String id = tab.getId();
+                TextArea textArea = (TextArea) tab.getContent();
+
+                tabController.saveTab(id, textArea.getText());
+            }
+        });
     }
 
     /**
@@ -96,9 +105,13 @@ public class FileMenu extends Menu implements CustomMenu {
     private void onSaveAsEvent() {
         TabPane tabPane = tabController.lookupTabPane();
         Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+        if (selectedTab == null) return;
 
-        if (selectedTab != null)
-            saveFileAs(selectedTab);
+        String id = selectedTab.getId();
+        TextArea textArea = (TextArea) selectedTab.getContent();
+
+        saveFileAs(selectedTab);
+        tabController.saveTab(id, textArea.getText());
     }
 
     /**
@@ -108,9 +121,13 @@ public class FileMenu extends Menu implements CustomMenu {
     private void onSaveEvent() {
         TabPane tabPane = tabController.lookupTabPane();
         Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+        if (selectedTab == null) return;
 
-        if (selectedTab != null)
-            saveFile(selectedTab);
+        String id = selectedTab.getId();
+        TextArea textArea = (TextArea) selectedTab.getContent();
+
+        saveFile(selectedTab);
+        tabController.saveTab(id, textArea.getText());
     }
 
     /**
@@ -197,10 +214,10 @@ public class FileMenu extends Menu implements CustomMenu {
         TextArea textArea = (TextArea) tab.getContent();
         String tabId = tab.getId();
 
-        TextFile textFile = ModelController.requestTextFile(tabId);
+        TextFile textFile = TextFileController.requestTextFile(tabId);
 
         if (textFile.saved() && !saveAs) {
-            ModelController.updateTextFile(textFile.uuid().toString(), textArea.getText());
+            TextFileController.updateTextFile(textFile.uuid().toString(), textArea.getText());
             fileController.writeFile(textFile.filePath(), textArea.getText());
 
         } else {
@@ -208,7 +225,7 @@ public class FileMenu extends Menu implements CustomMenu {
                     new File(textFile.filePath());
 
             if (selectedFile != null) {
-                ModelController.updateTextFile(tabId, selectedFile.getPath(), textArea.getText());
+                TextFileController.updateTextFile(tabId, selectedFile.getPath(), textArea.getText());
                 fileController.writeFile(selectedFile.getPath(), textArea.getText());
             }
         }
@@ -224,7 +241,7 @@ public class FileMenu extends Menu implements CustomMenu {
     private void createTab(String name, String filePath, String content) {
         TextFile textFile = new TextFile(UUID.randomUUID(), name, filePath, content, true);
 
-        ModelController.addTextFile(textFile);
+        TextFileController.addTextFile(textFile);
 
         Tab newTab = tabController.createNewTab(textFile.name(), textFile.uuid().toString(),
                 textFile.text());
@@ -244,7 +261,7 @@ public class FileMenu extends Menu implements CustomMenu {
     private void createNewTab(String tabName) {
         TextFile textFile = new TextFile(UUID.randomUUID(), tabName, null, "",
                 false);
-        ModelController.addTextFile(textFile);
+        TextFileController.addTextFile(textFile);
 
         Tab newTab = tabController.createNewTab(textFile.name(), textFile.uuid().toString(),
                 textFile.text());
@@ -271,7 +288,7 @@ public class FileMenu extends Menu implements CustomMenu {
      */
     private void handleTabCloseRequest(Tab tab) {
         String tabId = tab.getId();
-        TextFile textFile = ModelController.requestTextFile(tabId);
+        TextFile textFile = TextFileController.requestTextFile(tabId);
 
         if (!textFile.saved()) showUnsavedChangesDialog();
     }
