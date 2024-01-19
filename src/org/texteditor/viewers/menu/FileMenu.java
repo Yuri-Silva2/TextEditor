@@ -278,7 +278,15 @@ public class FileMenu extends Menu implements CustomMenu {
      * @param tab Tab for which the close handler is configured
      */
     private void configureTabCloseHandler(Tab tab) {
-        tab.setOnCloseRequest(event -> handleTabCloseRequest(tab));
+        tab.setOnCloseRequest(event -> {
+            String tabId = tab.getId();
+            TextFile textFile = TextFileController.requestTextFile(tabId);
+
+            if (!textFile.saved()) {
+                event.consume();
+                showUnsavedChangesDialog();
+            }
+        });
     }
 
     /**
@@ -290,7 +298,8 @@ public class FileMenu extends Menu implements CustomMenu {
         String tabId = tab.getId();
         TextFile textFile = TextFileController.requestTextFile(tabId);
 
-        if (!textFile.saved()) showUnsavedChangesDialog();
+        if (!textFile.saved())
+            showUnsavedChangesDialog();
     }
 
     /**
