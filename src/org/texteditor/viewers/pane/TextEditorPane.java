@@ -1,8 +1,10 @@
 package org.texteditor.viewers.pane;
 
 import javafx.scene.layout.BorderPane;
+import org.texteditor.controllers.EventController;
 import org.texteditor.controllers.FileController;
 import org.texteditor.controllers.TabController;
+import org.texteditor.controllers.TextFileController;
 
 /**
  * The TextEditorPane class represents the main pane for the text editor application,
@@ -10,13 +12,11 @@ import org.texteditor.controllers.TabController;
  */
 public class TextEditorPane extends BorderPane {
 
-    private final FileController fileController;
-    private final TabController tabController;
+    private final EventController eventController;
 
-    public TextEditorPane(TabController tabController, FileController fileController) {
+    public TextEditorPane(EventController eventController) {
         super();
-        this.tabController = tabController;
-        this.fileController = fileController;
+        this.eventController = eventController;
     }
 
     /**
@@ -45,7 +45,7 @@ public class TextEditorPane extends BorderPane {
     }
 
     private UtilitiesPane createUtilitiesPane() {
-        UtilitiesPane utilitiesPane = new UtilitiesPane(tabController, fileController);
+        UtilitiesPane utilitiesPane = new UtilitiesPane(eventController);
         utilitiesPane.configure();
         return utilitiesPane;
     }

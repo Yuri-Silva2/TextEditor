@@ -2,45 +2,54 @@ package org.texteditor.viewers.menu;
 
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import org.texteditor.TextEditorUtils;
+import org.texteditor.controllers.EventController;
 
+import static org.texteditor.TextEditorApplication.createIcon;
+import static org.texteditor.viewers.menu.MenuItemCreator.createMenuItem;
+
+/**
+ * The ConfigMenu class represents a menu for handling configuration-related operations in the text editor.
+ */
 public class ConfigMenu extends Menu implements CustomMenu {
 
-    public ConfigMenu() {
+    private final EventController eventController;
+
+    /**
+     * Constructs a ConfigMenu with the specified EventController.
+     *
+     * @param eventController The EventController for handling configuration events.
+     */
+    public ConfigMenu(EventController eventController) {
         super("Configurações");
-    }
-
-    @Override
-    public void configure() {
-        setId("config-menu");
-
-        MenuItem preferencesItem = createNewItem("Preferências...    ", this::onPreferencesEvent);
-        preferencesItem.setGraphic(TextEditorUtils.createIcon("media/preferences.png"));
-
-        MenuItem shortCutMapItem = createNewItem("Mapa de atalhos    ", this::onShortCutMapEvent);
-        shortCutMapItem.setGraphic(TextEditorUtils.createIcon("media/shortcut.png"));
-
-        addComponents(preferencesItem, shortCutMapItem);
-    }
-
-    private void onPreferencesEvent() {
-
-    }
-
-    private void onShortCutMapEvent() {
-
+        this.eventController = eventController;
     }
 
     /**
-     * Creates a MenuItem for creating a new item.
-     *
-     * @return MenuItem for creating a new item
+     * Configures the menu items and their associated actions.
      */
-    private MenuItem createNewItem(String content, Runnable eventHandler) {
-        MenuItem newItem = new MenuItem(content);
-        newItem.setId("new-item");
-        newItem.setOnAction(actionEvent -> eventHandler.run());
-        return newItem;
+    @Override
+    public void configure() {
+        setId("config-menu");
+        configurePreferencesMenuItem();
+        configureShortcutMapMenuItem();
+    }
+
+    /**
+     * Configures the Preferences menu item and its associated action.
+     */
+    private void configurePreferencesMenuItem() {
+        MenuItem preferencesItem = createMenuItem("Preferências...", eventController::onPreferencesEvent);
+        preferencesItem.setGraphic(createIcon("media/preferences.png"));
+        addComponents(preferencesItem);
+    }
+
+    /**
+     * Configures the Shortcut Map menu item and its associated action.
+     */
+    private void configureShortcutMapMenuItem() {
+        MenuItem shortcutMapItem = createMenuItem("Mapa de atalhos", eventController::onShortcutMapEvent);
+        shortcutMapItem.setGraphic(createIcon("media/shortcut.png"));
+        addComponents(shortcutMapItem);
     }
 
     /**

@@ -13,7 +13,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.texteditor.controllers.FileController;
 import org.texteditor.controllers.TextFileController;
-import org.texteditor.controllers.TabController;
 import org.texteditor.models.TextFile;
 
 import java.io.File;
@@ -23,26 +22,26 @@ import java.io.File;
  */
 public class AlertPane extends BorderPane {
 
+    private final TextFileController textFileController;
     private final FileController fileController;
-    private final TabController tabController;
     private final Stage stage;
 
-    public AlertPane(Stage stage, FileController fileController, TabController tabController) {
+    public AlertPane(Stage stage, FileController fileController, TextFileController textFileController) {
         super();
         this.stage = stage;
+        this.textFileController = textFileController;
         this.fileController = fileController;
-        this.tabController = tabController;
     }
 
     /**
      * Configures the layout of the AlertPane.
      */
-    public void configure() {
+    public void configure(TabPane tabPane) {
         String fontName = Font.getDefault().getName();
 
         AnchorPane anchorPaneTop = createTopPane(fontName);
         AnchorPane anchorPaneCenter = createCenterPane(fontName);
-        AnchorPane anchorPaneBottom = createBottomPane();
+        AnchorPane anchorPaneBottom = createBottomPane(tabPane);
 
         setTop(anchorPaneTop);
         setCenter(anchorPaneCenter);
@@ -96,14 +95,14 @@ public class AlertPane extends BorderPane {
      *
      * @return The created bottom AnchorPane
      */
-    private AnchorPane createBottomPane() {
+    private AnchorPane createBottomPane(TabPane tabPane) {
         AnchorPane anchorPaneBottom = new AnchorPane();
         anchorPaneBottom.setPrefWidth(300.0);
         anchorPaneBottom.setPrefHeight(74.0);
 
-        Button saveButton = createButton("Salvar", 14, this::onAlertPaneSaveEvent);
-        Button doNotSaveButton = createButton("Não salvar", 114, this::onAlertPaneDoNotSaveEvent);
-        Button cancelButton = createButton("Cancelar", 214, this::onAlertPaneCancelEvent);
+        Button saveButton = createSaveButton(tabPane);
+        Button doNotSaveButton = createDoNotSaveButton(tabPane);
+        Button cancelButton = createCancelButton(tabPane);
 
         anchorPaneBottom.getChildren().addAll(saveButton, doNotSaveButton, cancelButton);
 
@@ -120,8 +119,7 @@ public class AlertPane extends BorderPane {
     /**
      * Handles the "Do Not Save" event.
      */
-    private void onAlertPaneDoNotSaveEvent() {
-        TabPane tabPane = tabController.lookupTabPane();
+    private void onAlertPaneDoNotSaveEvent(TabPane tabPane) {
         Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
         stage.close();
@@ -135,22 +133,21 @@ public class AlertPane extends BorderPane {
     /**
      * Handles the save event.
      */
-    private void onAlertPaneSaveEvent() {
+    private void onAlertPaneSaveEvent(TabPane tabPane) {
         File selectedFile = fileController.createFileChooserAndSaveFile(
                 "Salvar arquivo");
 
         if (selectedFile == null) return;
 
-        TabPane tabPane = tabController.lookupTabPane();
         Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
         TextArea textArea = (TextArea) selectedTab.getContent();
         String tabId = selectedTab.getId();
 
-        TextFile textFile = TextFileController.requestTextFile(tabId);
+        TextFile textFile = textFileController.requestTextFile(tabId);
 
         if (!textFile.saved()) {
-            TextFileController.updateTextFile(tabId, selectedFile.getPath(),
+            textFileController.updateTextFile(tabId, selectedFile.getPath(),
                     textArea.getText());
 
             fileController.writeFile(selectedFile.getPath(),
@@ -166,20 +163,35 @@ public class AlertPane extends BorderPane {
     }
 
     /**
-     * Creates a button with specified text, layoutX, and event handler.
-     *
-     * @param text         The text for the button
-     * @param layoutX      The layout X position
-     * @param eventHandler The event handler for the button
-     * @return The created button
+     * @return
      */
-    private Button createButton(String text, double layoutX, Runnable eventHandler) {
-        Button button = new Button(text);
-        button.setLayoutX(layoutX);
+    private Button createSaveButton(TabPane tabPane) {
+        Button button = new Button("Salvar");
+        button.setLayoutX(14);
         button.setLayoutY(27);
         button.setPrefWidth(72);
         button.setPrefHeight(25);
-        button.setOnMouseClicked(mouseEvent -> eventHandler.run());
+        button.setOnMouseClicked(event -> onAlertPaneSaveEvent(tabPane));
+        return button;
+    }
+
+    private Button createDoNotSaveButton(TabPane tabPane) {
+        Button button = new Button("Não salvar");
+        button.setLayoutX(114);
+        button.setLayoutY(27);
+        button.setPrefWidth(72);
+        button.setPrefHeight(25);
+        button.setOnMouseClicked(event -> onAlertPaneDoNotSaveEvent(tabPane));
+        return button;
+    }
+
+    private Button createCancelButton(TabPane tabPane) {
+        Button button = new Button("Cancelar");
+        button.setLayoutX(214);
+        button.setLayoutY(27);
+        button.setPrefWidth(72);
+        button.setPrefHeight(25);
+        button.setOnMouseClicked(event -> onAlertPaneCancelEvent());
         return button;
     }
 }

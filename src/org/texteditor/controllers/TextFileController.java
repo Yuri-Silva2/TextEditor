@@ -10,14 +10,14 @@ import java.util.Map;
  */
 public class TextFileController {
 
-    private final static Map<String, TextFile> openedFiles = new HashMap<>();
+    private final Map<String, TextFile> openedFiles = new HashMap<>();
 
     /**
      * Adds a text file to the collection of temporarily opened files.
      *
      * @param textFile The text file to be added.
      */
-    public static void addTextFile(TextFile textFile) {
+    public void addTextFile(TextFile textFile) {
         openedFiles.putIfAbsent(textFile.uuid().toString(),
                 textFile);
     }
@@ -28,7 +28,7 @@ public class TextFileController {
      * @param id The id of the text file.
      * @return The requested text file or null if not found.
      */
-    public static TextFile requestTextFile(String id) {
+    public TextFile requestTextFile(String id) {
         return openedFiles.get(id);
     }
 
@@ -38,7 +38,7 @@ public class TextFileController {
      * @param id   The ID of the text file.
      * @param text The new content of the text file.
      */
-    public static void updateTextFile(String id, String text) {
+    public void updateTextFile(String id, String text) {
         TextFile textFile = requestTextFile(id);
 
         TextFile toUpdateTextFile = new TextFile(textFile.uuid(),
@@ -54,7 +54,7 @@ public class TextFileController {
      * @param filePath The new file path of the text file.
      * @param text     The new content of the text file.
      */
-    public static void updateTextFile(String id, String filePath, String text) {
+    public void updateTextFile(String id, String filePath, String text) {
         TextFile textFile = requestTextFile(id);
 
         TextFile toUpdateTextFile = new TextFile(textFile.uuid(),

@@ -1,34 +1,30 @@
 package org.texteditor.viewers.menu;
 
-import javafx.application.Platform;
-import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import org.texteditor.TextEditorUtils;
-import org.texteditor.controllers.FileController;
-import org.texteditor.controllers.TextFileController;
-import org.texteditor.controllers.TabController;
-import org.texteditor.models.TextFile;
+import org.texteditor.controllers.EventController;
 
-import java.io.File;
-import java.util.UUID;
-
-import static org.texteditor.TextEditorUtils.createAlertPane;
+import static org.texteditor.TextEditorApplication.createIcon;
+import static org.texteditor.viewers.menu.MenuItemCreator.createMenuItem;
 
 /**
- * A menu class responsible for handling file-related operations in the text editor.
- * This class encapsulates functionality related to creating, opening, saving and quiting tabs.
+ * The FileMenu class represents a menu responsible for handling file-related operations in the text editor.
+ * It encapsulates functionality related to creating, opening, saving, and quitting tabs.
  */
 public class FileMenu extends Menu implements CustomMenu {
 
-    private final FileController fileController;
-    private final TabController tabController;
+    private final EventController eventController;
 
-    public FileMenu(TabController tabController, FileController fileController) {
+    /**
+     * Constructor for the FileMenu class.
+     *
+     * @param eventController The EventController instance for handling events.
+     */
+    public FileMenu(EventController eventController) {
         super("Arquivo");
-        this.tabController = tabController;
-        this.fileController = fileController;
+        this.eventController = eventController;
     }
 
     /**
@@ -37,275 +33,80 @@ public class FileMenu extends Menu implements CustomMenu {
     @Override
     public void configure() {
         setId("file-menu");
-
-        MenuItem newItem = createNewItem("Nova guia    ", this::onNewTabEvent);
-        newItem.setAccelerator(new KeyCodeCombination(KeyCode.N,
-                KeyCombination.CONTROL_DOWN));
-        newItem.setGraphic(TextEditorUtils.createIcon("media/add.png"));
-
-        MenuItem openItem = createNewItem("Abrir    ", this::onOpenEvent);
-        openItem.setAccelerator(new KeyCodeCombination(KeyCode.O,
-                KeyCombination.CONTROL_DOWN));
-        openItem.setGraphic(TextEditorUtils.createIcon("media/open.png"));
-
-        MenuItem saveItem = createNewItem("Salvar    ", this::onSaveEvent);
-        saveItem.setAccelerator(new KeyCodeCombination(KeyCode.S,
-                KeyCombination.CONTROL_DOWN));
-        saveItem.setGraphic(TextEditorUtils.createIcon("media/save.png"));
-
-        MenuItem saveAsItem = createNewItem("Salvar como    ", this::onSaveAsEvent);
-        saveAsItem.setAccelerator(new KeyCodeCombination(KeyCode.S,
-                KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
-        saveAsItem.setGraphic(TextEditorUtils.createIcon("media/save_as.png"));
-
-        MenuItem saveAllItem = createNewItem("Salvar tudo    ", this::onSaveAllEvent);
-        saveAllItem.setAccelerator(new KeyCodeCombination(KeyCode.S,
-                KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
-        saveAllItem.setGraphic(TextEditorUtils.createIcon("media/save.png"));
-
-        MenuItem quitItem = createNewItem("Sair    ", this::onQuitEvent);
-        quitItem.setAccelerator(new KeyCodeCombination(KeyCode.F4,
-                KeyCombination.ALT_DOWN));
-        quitItem.setGraphic(TextEditorUtils.createIcon("media/quit.png"));
-
-        addComponents(newItem, openItem, saveItem,
-                saveAsItem, saveAllItem, quitItem);
+        configureNewTabMenuItem();
+        configureOpenMenuItem();
+        configureSaveMenuItem();
+        configureSaveAsMenuItem();
+        configureSaveAllMenuItem();
+        configureQuitMenuItem();
     }
 
     /**
-     * Handles the event when the user attempts to quit the application.
-     * Exits the application by calling Platform.exit().
+     * Configures the menu item for creating a new tab.
      */
-    private void onQuitEvent() {
-        Platform.exit();
+    private void configureNewTabMenuItem() {
+        MenuItem newItem = createMenuItem("Nova guia", eventController::onNewTabEvent,
+                KeyCode.N, KeyCombination.CONTROL_DOWN);
+        newItem.setGraphic(createIcon("media/add.png"));
+        addComponents(newItem);
     }
 
     /**
-     * Handles the event when the user wants to save all open tabs.
-     * Iterates through all tabs in the TabPane and saves each file using saveFile method.
+     * Configures the menu item for opening a file.
      */
-    private void onSaveAllEvent() {
-        TabPane tabPane = tabController.lookupTabPane();
-        tabPane.getTabs().forEach(tab -> {
-            if (tab != null) {
-                saveFile(tab);
-
-                String id = tab.getId();
-                TextArea textArea = (TextArea) tab.getContent();
-
-                tabController.saveTab(id, textArea.getText());
-            }
-        });
+    private void configureOpenMenuItem() {
+        MenuItem openItem = createMenuItem("Abrir", eventController::onOpenEvent,
+                KeyCode.O, KeyCombination.CONTROL_DOWN);
+        openItem.setGraphic(createIcon("media/open.png"));
+        addComponents(openItem);
     }
 
     /**
-     * Handles the event when the user wants to save the currently selected tab with a new name.
-     * Checks if there is a selected tab in the TabPane and calls saveFileAs method for the selected tab.
+     * Configures the menu item for saving a file.
      */
-    private void onSaveAsEvent() {
-        TabPane tabPane = tabController.lookupTabPane();
-        Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
-        if (selectedTab == null) return;
-
-        String id = selectedTab.getId();
-        TextArea textArea = (TextArea) selectedTab.getContent();
-
-        saveFileAs(selectedTab);
-        tabController.saveTab(id, textArea.getText());
+    private void configureSaveMenuItem() {
+        MenuItem saveItem = createMenuItem("Salvar", eventController::onSaveEvent,
+                KeyCode.S, KeyCombination.CONTROL_DOWN);
+        saveItem.setGraphic(createIcon("media/save.png"));
+        addComponents(saveItem);
     }
 
     /**
-     * Handles the event when the user wants to save the currently selected tab.
-     * Checks if there is a selected tab in the TabPane and calls saveFile method for the selected tab.
+     * Configures the menu item for saving a file with a different name.
      */
-    private void onSaveEvent() {
-        TabPane tabPane = tabController.lookupTabPane();
-        Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
-        if (selectedTab == null) return;
-
-        String id = selectedTab.getId();
-        TextArea textArea = (TextArea) selectedTab.getContent();
-
-        saveFile(selectedTab);
-        tabController.saveTab(id, textArea.getText());
+    private void configureSaveAsMenuItem() {
+        MenuItem saveAsItem = createMenuItem("Salvar como", eventController::onSaveAsEvent,
+                KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN);
+        saveAsItem.setGraphic(createIcon("media/save_as.png"));
+        addComponents(saveAsItem);
     }
 
     /**
-     * Handles the event when the user wants to open a file.
-     * Opens a file dialog to let the user chooser a file, then calls openFile method with the selected file.
+     * Configures the menu item for saving all open files.
      */
-    private void onOpenEvent() {
-        File selectedFile = fileController.createFileChooserAndGetFile(
-                "Selecionar Arquivo");
-
-        if (selectedFile != null)
-            openFile(selectedFile);
+    private void configureSaveAllMenuItem() {
+        MenuItem saveAllItem = createMenuItem("Salvar tudo", eventController::onSaveAllEvent,
+                KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
+        saveAllItem.setGraphic(createIcon("media/save.png"));
+        addComponents(saveAllItem);
     }
 
     /**
-     * Handles the event when the user wants to create a new tab.
-     * Creates a new tab in the TabPane with a default name and index, then calls createNewTav method.
+     * Configures the menu item for quitting the application.
      */
-    private void onNewTabEvent() {
-        TabPane tabPane = tabController.lookupTabPane();
-
-        int number = tabPane.getTabs().size() + 1;
-        String name = "Sem título (" + number + ")";
-
-        createNewTab(name);
-    }
-
-    /**
-     * Creates a MenuItem for creating a new item.
-     *
-     * @return MenuItem for creating a new item
-     */
-    private MenuItem createNewItem(String content, Runnable eventHandler) {
-        MenuItem newItem = new MenuItem(content);
-        newItem.setId("new-item");
-        newItem.setOnAction(actionEvent -> eventHandler.run());
-        return newItem;
+    private void configureQuitMenuItem() {
+        MenuItem quitItem = createMenuItem("Sair", eventController::onQuitEvent,
+                KeyCode.F4, KeyCombination.ALT_DOWN);
+        quitItem.setGraphic(createIcon("media/quit.png"));
+        addComponents(quitItem);
     }
 
     /**
      * Adds an array of MenuItems to the menu.
      *
-     * @param menuItems MenuItems to be added to the menu
+     * @param menuItems MenuItems to be added to the menu.
      */
     private void addComponents(MenuItem... menuItems) {
         getItems().addAll(menuItems);
-    }
-
-    /**
-     * Opens the specified file, creates a new tab, and displays its content.
-     *
-     * @param selectedFile File to be opened
-     */
-    private void openFile(File selectedFile) {
-        String content = fileController.readFile(selectedFile);
-        createTab(selectedFile.getName(), selectedFile.getPath(), content);
-    }
-
-    /**
-     * Saves the content of the specified tab.
-     *
-     * @param tab Tab to be saved
-     */
-    private void saveFile(Tab tab) {
-        saveFileInternal(tab, false);
-    }
-
-    /**
-     * Saves the content of the specified tab with a new name or location.
-     *
-     * @param tab Tab to be saved as
-     */
-    private void saveFileAs(Tab tab) {
-        saveFileInternal(tab, true);
-    }
-
-    /**
-     * Internally handles the saving of a file, considering whether it is a new save or a "Save As" operation.
-     *
-     * @param tab    Tab associated with the file to be saved
-     * @param saveAs Indicates whether it is a "Save As" operation
-     */
-    private void saveFileInternal(Tab tab, boolean saveAs) {
-        TextArea textArea = (TextArea) tab.getContent();
-        String tabId = tab.getId();
-
-        TextFile textFile = TextFileController.requestTextFile(tabId);
-
-        if (textFile.saved() && !saveAs) {
-            TextFileController.updateTextFile(textFile.uuid().toString(), textArea.getText());
-            fileController.writeFile(textFile.filePath(), textArea.getText());
-
-        } else {
-            File selectedFile = saveAs ? fileController.createFileChooserAndSaveFile("Salvar arquivo") :
-                    new File(textFile.filePath());
-
-            if (selectedFile != null) {
-                TextFileController.updateTextFile(tabId, selectedFile.getPath(), textArea.getText());
-                fileController.writeFile(selectedFile.getPath(), textArea.getText());
-            }
-        }
-    }
-
-    /**
-     * Creates a new tab with the specified name file path, and content.
-     *
-     * @param name     Name of the new tab
-     * @param filePath File path associated with the new tab
-     * @param content  Content to be displayed in the new tab
-     */
-    private void createTab(String name, String filePath, String content) {
-        TextFile textFile = new TextFile(UUID.randomUUID(), name, filePath, content, true);
-
-        TextFileController.addTextFile(textFile);
-
-        Tab newTab = tabController.createNewTab(textFile.name(), textFile.uuid().toString(),
-                textFile.text());
-
-        newTab.setOnCloseRequest(event -> handleTabCloseRequest(newTab));
-
-        TabPane tabPane = tabController.lookupTabPane();
-        tabController.addTab(newTab, tabPane);
-        tabController.selectedAndFocusTab(newTab, tabPane);
-    }
-
-    /**
-     * Creates a new untitled tab and displays it.
-     *
-     * @param tabName Name to be given to the new tab
-     */
-    private void createNewTab(String tabName) {
-        TextFile textFile = new TextFile(UUID.randomUUID(), tabName, null, "",
-                false);
-        TextFileController.addTextFile(textFile);
-
-        Tab newTab = tabController.createNewTab(textFile.name(), textFile.uuid().toString(),
-                textFile.text());
-
-        configureTabCloseHandler(newTab);
-        TabPane tabPane = tabController.lookupTabPane();
-        tabController.addTab(newTab, tabPane);
-        tabController.selectedAndFocusTab(newTab, tabPane);
-    }
-
-    /**
-     * Configures the close handler for a given tab.
-     *
-     * @param tab Tab for which the close handler is configured
-     */
-    private void configureTabCloseHandler(Tab tab) {
-        tab.setOnCloseRequest(event -> {
-            String tabId = tab.getId();
-            TextFile textFile = TextFileController.requestTextFile(tabId);
-
-            if (!textFile.saved()) {
-                event.consume();
-                showUnsavedChangesDialog();
-            }
-        });
-    }
-
-    /**
-     * Handles the close request for a given tab.
-     *
-     * @param tab Tab for which the close request is handled
-     */
-    private void handleTabCloseRequest(Tab tab) {
-        String tabId = tab.getId();
-        TextFile textFile = TextFileController.requestTextFile(tabId);
-
-        if (!textFile.saved())
-            showUnsavedChangesDialog();
-    }
-
-    /**
-     * Shows an alert dialog for unsaved changes when closing a tab.
-     */
-    private void showUnsavedChangesDialog() {
-        createAlertPane(tabController);
     }
 }

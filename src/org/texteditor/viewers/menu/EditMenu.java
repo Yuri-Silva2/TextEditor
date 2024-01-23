@@ -1,26 +1,30 @@
 package org.texteditor.viewers.menu;
 
-import javafx.scene.control.*;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.Clipboard;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import org.texteditor.TextEditorUtils;
-import org.texteditor.controllers.TabController;
+import org.texteditor.controllers.EventController;
 
-import java.awt.*;
-import java.awt.datatransfer.StringSelection;
+import static org.texteditor.TextEditorApplication.createIcon;
+import static org.texteditor.viewers.menu.MenuItemCreator.createMenuItem;
 
+/**
+ * The EditMenu class represents a menu responsible for handling edit-related operations in the text editor.
+ * It encapsulates functionality related to undo, redo, cut, copy, paste, delete, and select all operations.
+ */
 public class EditMenu extends Menu implements CustomMenu {
 
-    private final TabController tabController;
+    private final EventController eventController;
 
-    public EditMenu(TabController tabController) {
+    /**
+     * Constructor for the EditMenu class.
+     *
+     * @param eventController The EventController instance for handling events.
+     */
+    public EditMenu(EventController eventController) {
         super("Editar");
-        this.tabController = tabController;
+        this.eventController = eventController;
     }
 
     /**
@@ -29,162 +33,83 @@ public class EditMenu extends Menu implements CustomMenu {
     @Override
     public void configure() {
         setId("edit-menu");
-
-        MenuItem undoItem = createNewItem("Desfazer    ", this::onUndoEvent);
-        undoItem.setAccelerator(new KeyCodeCombination(KeyCode.Z,
-                KeyCombination.CONTROL_DOWN));
-        undoItem.setGraphic(TextEditorUtils.createIcon("media/undo.png"));
-
-        MenuItem remakeItem = createNewItem("Refazer    ", this::onRemakeEvent);
-        remakeItem.setAccelerator(new KeyCodeCombination(KeyCode.Y,
-                KeyCombination.CONTROL_DOWN));
-        remakeItem.setGraphic(TextEditorUtils.createIcon("media/remake.png"));
-
-        MenuItem cutItem = createNewItem("Recortar    ", this::onCutEvent);
-        cutItem.setAccelerator(new KeyCodeCombination(KeyCode.X,
-                KeyCombination.CONTROL_DOWN));
-        cutItem.setGraphic(TextEditorUtils.createIcon("media/cut.png"));
-
-        MenuItem copyItem = createNewItem("Copiar    ", this::onCopyEvent);
-        copyItem.setAccelerator(new KeyCodeCombination(KeyCode.C,
-                KeyCombination.CONTROL_DOWN));
-        copyItem.setGraphic(TextEditorUtils.createIcon("media/copy.png"));
-
-        MenuItem pasteItem = createNewItem("Colar    ", this::onPasteEvent);
-        pasteItem.setAccelerator(new KeyCodeCombination(KeyCode.V,
-                KeyCombination.CONTROL_DOWN));
-        pasteItem.setGraphic(TextEditorUtils.createIcon("media/paste.png"));
-
-        MenuItem deleteItem = createNewItem("Apagar    ", this::onDeleteEvent);
-        deleteItem.setAccelerator(new KeyCodeCombination(KeyCode.DELETE));
-        deleteItem.setGraphic(TextEditorUtils.createIcon("media/delete.png"));
-
-        MenuItem selectAllItem = createNewItem("Selecionar tudo    ", this::onSelectAllEvent);
-        selectAllItem.setAccelerator(new KeyCodeCombination(KeyCode.A,
-                KeyCombination.CONTROL_DOWN));
-        selectAllItem.setGraphic(TextEditorUtils.createIcon("media/select_all.png"));
-
-        addComponents(undoItem, remakeItem, cutItem, copyItem,
-                pasteItem, deleteItem, selectAllItem);
+        configureUndoMenuItem();
+        configureRemakeMenuItem();
+        configureCutMenuItem();
+        configureCopyMenuItem();
+        configurePasteMenuItem();
+        configureDeleteMenuItem();
+        configureSelectAllMenuItem();
     }
 
     /**
-     *
+     * Configures the menu item for undoing an action.
      */
-    private void onUndoEvent() {
-
+    private void configureUndoMenuItem() {
+        MenuItem undoItem = createMenuItem("Desfazer", eventController::onUndoEvent,
+                KeyCode.Z, KeyCombination.CONTROL_DOWN);
+        undoItem.setGraphic(createIcon("media/undo.png"));
+        addComponents(undoItem);
     }
 
     /**
-     *
+     * Configures the menu item for redoing an action.
      */
-    private void onRemakeEvent() {
-    
+    private void configureRemakeMenuItem() {
+        MenuItem undoItem = createMenuItem("Refazer", eventController::onRemakeEvent,
+                KeyCode.Y, KeyCombination.CONTROL_DOWN);
+        undoItem.setGraphic(createIcon("media/remake.png"));
+        addComponents(undoItem);
     }
 
     /**
-     *
+     * Configures the menu item for cutting selected text.
      */
-    private void onCutEvent() {
-        Tab selectedTab = getCurrentSelectTab();
-        if (selectedTab == null) return;
-
-        TextArea textArea = (TextArea) selectedTab.getContent();
-        String selectedText = textArea.getSelectedText();
-
-        textArea.setText(textArea.getText()
-                .replace(selectedText, ""));
-
-        java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit()
-                .getSystemClipboard();
-        StringSelection stringSelection = new StringSelection(selectedText);
-        clipboard.setContents(stringSelection, stringSelection);
+    private void configureCutMenuItem() {
+        MenuItem cutItem = createMenuItem("Recortar", eventController::onCutEvent,
+                KeyCode.X, KeyCombination.CONTROL_DOWN);
+        cutItem.setGraphic(createIcon("media/cut.png"));
+        addComponents(cutItem);
     }
 
     /**
-     *
+     * Configures the menu item for copying selected text.
      */
-    private void onCopyEvent() {
-        Tab selectedTab = getCurrentSelectTab();
-        if (selectedTab == null) return;
-
-        TextArea textArea = (TextArea) selectedTab.getContent();
-        String selectedText = textArea.getSelectedText();
-
-        java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit()
-                .getSystemClipboard();
-        StringSelection stringSelection = new StringSelection(selectedText);
-        clipboard.setContents(stringSelection, stringSelection);
+    private void configureCopyMenuItem() {
+        MenuItem copyItem = createMenuItem("Copiar", eventController::onCopyEvent,
+                KeyCode.C, KeyCombination.CONTROL_DOWN);
+        copyItem.setGraphic(createIcon("media/copy.png"));
+        addComponents(copyItem);
     }
 
     /**
-     *
+     * Configures the menu item for pasting copied or cut text.
      */
-    private void onPasteEvent() {
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-
-        Tab selectedTab = getCurrentSelectTab();
-        if (selectedTab == null) return;
-
-        TextArea textArea = (TextArea) selectedTab.getContent();
-
-        if (clipboard.hasString()) {
-            String clipboardText = clipboard.getString();
-            String text = textArea.getText();
-            int position = textArea.getCaretPosition();
-
-            StringBuilder stringBuilder = new StringBuilder(text);
-            stringBuilder.insert(position, clipboardText);
-
-            textArea.setText(stringBuilder.toString());
-            textArea.positionCaret(position);
-        }
+    private void configurePasteMenuItem() {
+        MenuItem pasteItem = createMenuItem("Colar", eventController::onPasteEvent,
+                KeyCode.C, KeyCombination.CONTROL_DOWN);
+        pasteItem.setGraphic(createIcon("media/paste.png"));
+        addComponents(pasteItem);
     }
 
     /**
-     *
+     * Configures the menu item for deleting selected text.
      */
-    private void onDeleteEvent() {
-        Tab selectedTab = getCurrentSelectTab();
-        if (selectedTab == null) return;
-
-        TextArea textArea = (TextArea) selectedTab.getContent();
-        String selectedText = textArea.getSelectedText();
-
-        textArea.setText(textArea.getText()
-                .replace(selectedText, ""));
+    private void configureDeleteMenuItem() {
+        MenuItem deleteItem = createMenuItem("Deletar", eventController::onDeleteEvent,
+                KeyCode.DELETE);
+        deleteItem.setGraphic(createIcon("media/delete.png"));
+        addComponents(deleteItem);
     }
 
     /**
-     *
+     * Configures the menu item for selecting all text in the editor.
      */
-    private void onSelectAllEvent() {
-        Tab selectedTab = getCurrentSelectTab();
-
-        if (selectedTab != null)
-            ((TextArea) selectedTab.getContent()).selectAll();
-    }
-
-    /**
-     * Creates a MenuItem for creating a new item.
-     *
-     * @return MenuItem for creating a new item
-     */
-    private MenuItem createNewItem(String content, Runnable eventHandler) {
-        MenuItem newItem = new MenuItem(content);
-        newItem.setId("new-item");
-        newItem.setOnAction(actionEvent -> eventHandler.run());
-        return newItem;
-    }
-
-    /**
-     *
-     * @return Tab
-     */
-
-    private Tab getCurrentSelectTab() {
-        TabPane tabPane = tabController.lookupTabPane();
-        return tabPane.getSelectionModel().getSelectedItem();
+    private void configureSelectAllMenuItem() {
+        MenuItem selectAllItem = createMenuItem("Selecionar tudo", eventController::onSelectAllEvent,
+                KeyCode.A, KeyCombination.CONTROL_DOWN);
+        selectAllItem.setGraphic(createIcon("media/select_all.png"));
+        addComponents(selectAllItem);
     }
 
     /**
@@ -192,7 +117,6 @@ public class EditMenu extends Menu implements CustomMenu {
      *
      * @param menuItems MenuItems to be added to the menu
      */
-
     private void addComponents(MenuItem... menuItems) {
         getItems().addAll(menuItems);
     }

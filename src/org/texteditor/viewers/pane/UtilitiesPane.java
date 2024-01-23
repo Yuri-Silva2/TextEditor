@@ -1,21 +1,32 @@
 package org.texteditor.viewers.pane;
 
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import org.texteditor.controllers.EventController;
 import org.texteditor.controllers.FileController;
 import org.texteditor.controllers.TabController;
+import org.texteditor.controllers.TextFileController;
 import org.texteditor.viewers.menu.*;
 
+import static org.texteditor.TextEditorApplication.createIcon;
+
+/**
+ * Represents the UtilitiesPane in a text editor application, providing quick access to various actions.
+ * Extends JavaFX AnchorPane and includes methods for configuring layout and components.
+ */
 public class UtilitiesPane extends AnchorPane {
 
-    private final FileController fileController;
-    private final TabController tabController;
+    private final EventController eventController;
 
-    public UtilitiesPane(TabController tabController, FileController fileController) {
+    /**
+     * Constructor for the UtilitiesPane class.
+     *
+     * @param eventController The EventController responsible for handling utility-related events.
+     */
+    public UtilitiesPane(EventController eventController) {
         super();
-        this.tabController = tabController;
-        this.fileController = fileController;
+        this.eventController = eventController;
     }
 
     /**
@@ -28,21 +39,68 @@ public class UtilitiesPane extends AnchorPane {
 
         setPrefHeight(48.0);
 
-        MenuBar textMenuBar = createMenuBar("text-menu-bar");
-        textMenuBar.setLayoutY(0.0);
+        MenuBar textMenuBar = createMenuBar();
+        ToolBar iconMenuBar = createToolBar();
+        iconMenuBar.setStyle("-fx-background-color: transparent;");
 
-        MenuBar iconMenuBar = createMenuBar("icon-menu-bar");
-        iconMenuBar.setLayoutY(25.0);
+        addComponents(textMenuBar, getMenus());
+        addComponents(iconMenuBar, getButtons());
 
-        Menu[] menus = {createFileMenu(), createEditMenu(),
+        getChildren().addAll(textMenuBar, iconMenuBar);
+    }
+
+    /**
+     * Gets an array of Menu components for the UtilityPane.
+     *
+     * @return An array of Menu components.
+     */
+    private Menu[] getMenus() {
+        return new Menu[]{createFileMenu(), createEditMenu(),
                 createLocateMenu(), createViewMenu(),
                 createFormatMenu(), createConfigMenu(),
                 createHelpMenu()};
+    }
 
-        addComponents(textMenuBar, menus);
-        //addComponents(iconMenuBar, fileMenu);
+    /**
+     * Gets an array of Button components for the UtilityPane.
+     *
+     * @return An array of Button components.
+     */
+    private Button[] getButtons() {
+        return new Button[]{createButton(createIcon("media/add.png"), "Nova guia", eventController::onNewTabEvent),
+                createButton(createIcon("media/open.png"), "Abrir...", eventController::onOpenEvent),
+                createButton(createIcon("media/save.png"), "Salvar", eventController::onSaveEvent),
+                createButton(createIcon("media/save_as.png"), "Salvar como", eventController::onSaveAsEvent),
+                createButton(createIcon("media/save.png"), "Salvar tudo", eventController::onSaveAllEvent),
+                createButton(createIcon("media/cut.png"), "Recortar", eventController::onCutEvent),
+                createButton(createIcon("media/copy.png"), "Copiar", eventController::onCopyEvent),
+                createButton(createIcon("media/paste.png"), "Colar", eventController::onPasteEvent),
+                createButton(createIcon("media/undo.png"), "Desfazer", eventController::onUndoEvent),
+                createButton(createIcon("media/remake.png"), "Refazer", eventController::onRemakeEvent),
+                createButton(createIcon("media/find.png"), "Localizar...", eventController::onLocateEvent),
+                createButton(createIcon("media/find_replace.png"), "Substituir...", eventController::onFindAndReplaceEvent),
+                createButton(createIcon("media/zoom_in.png"), "Ampliar", eventController::onEnlargeEvent),
+                createButton(createIcon("media/zoom_out.png"), "Reduzir", eventController::onReduceEvent),
+                createButton(createIcon("media/segment.png"), "Quebrar linhas automaticamente", eventController::onLineStyleEvent)};
+    }
 
-        getChildren().addAll(textMenuBar, iconMenuBar);
+    /**
+     * Creates and returns a new Button with the specified ImageView, tooltip, and event handler.
+     *
+     * @param view         The ImageView for the Button.
+     * @param toolTip      The tooltip for the Button.
+     * @param eventHandler The event handler for the Button.
+     * @return The created Button.
+     */
+    private Button createButton(ImageView view, String toolTip, Runnable eventHandler) {
+        Button button = new Button("", view);
+        button.setStyle("-fx-background-color: transparent;");
+        button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        Tooltip buttonToolTip = new Tooltip(toolTip);
+        buttonToolTip.setStyle("-fx-background-color: white;");
+        button.setTooltip(buttonToolTip);
+        button.setOnAction(event -> eventHandler.run());
+        return button;
     }
 
     /**
@@ -50,11 +108,25 @@ public class UtilitiesPane extends AnchorPane {
      *
      * @return The created MenuBar
      */
-    private MenuBar createMenuBar(String id) {
+    private MenuBar createMenuBar() {
         MenuBar menuBar = new MenuBar();
-        menuBar.setId(id);
+        menuBar.setId("text-menu-bar");
         menuBar.setPrefHeight(16.0);
+        menuBar.setLayoutY(0.0);
         return menuBar;
+    }
+
+    /**
+     * Creates and returns a new ToolBar.
+     *
+     * @return The created ToolBar
+     */
+    private ToolBar createToolBar() {
+        ToolBar toolBar = new ToolBar();
+        toolBar.setId("icon-tool-bar");
+        toolBar.setPrefHeight(16.0);
+        toolBar.setLayoutY(25.0);
+        return toolBar;
     }
 
     /**
@@ -63,7 +135,7 @@ public class UtilitiesPane extends AnchorPane {
      * @return The created FileMenu
      */
     private FileMenu createFileMenu() {
-        FileMenu fileMenu = new FileMenu(tabController, fileController);
+        FileMenu fileMenu = new FileMenu(eventController);
         fileMenu.configure();
         return fileMenu;
     }
@@ -74,7 +146,7 @@ public class UtilitiesPane extends AnchorPane {
      * @return The created EditMenu
      */
     private EditMenu createEditMenu() {
-        EditMenu editMenu = new EditMenu(tabController);
+        EditMenu editMenu = new EditMenu(eventController);
         editMenu.configure();
         return editMenu;
     }
@@ -85,7 +157,7 @@ public class UtilitiesPane extends AnchorPane {
      * @return The created LocateMenu
      */
     private LocateMenu createLocateMenu() {
-        LocateMenu locateMenu = new LocateMenu();
+        LocateMenu locateMenu = new LocateMenu(eventController);
         locateMenu.configure();
         return locateMenu;
     }
@@ -96,7 +168,7 @@ public class UtilitiesPane extends AnchorPane {
      * @return The created ViewMenu
      */
     private ViewMenu createViewMenu() {
-        ViewMenu viewMenu = new ViewMenu();
+        ViewMenu viewMenu = new ViewMenu(eventController);
         viewMenu.configure();
         return viewMenu;
     }
@@ -107,7 +179,7 @@ public class UtilitiesPane extends AnchorPane {
      * @return The created FormatMenu
      */
     private FormatMenu createFormatMenu() {
-        FormatMenu formatMenu = new FormatMenu();
+        FormatMenu formatMenu = new FormatMenu(eventController);
         formatMenu.configure();
         return formatMenu;
     }
@@ -118,7 +190,7 @@ public class UtilitiesPane extends AnchorPane {
      * @return The created ConfigMenu
      */
     private ConfigMenu createConfigMenu() {
-        ConfigMenu configMenu = new ConfigMenu();
+        ConfigMenu configMenu = new ConfigMenu(eventController);
         configMenu.configure();
         return configMenu;
     }
@@ -129,13 +201,9 @@ public class UtilitiesPane extends AnchorPane {
      * @return The created HelpMenu
      */
     private HelpMenu createHelpMenu() {
-        HelpMenu helpMenu = new HelpMenu();
+        HelpMenu helpMenu = new HelpMenu(eventController);
         helpMenu.configure();
         return helpMenu;
-    }
-
-    private void createIcons() {
-
     }
 
     /**
@@ -148,4 +216,13 @@ public class UtilitiesPane extends AnchorPane {
         menuBar.getMenus().addAll(menus);
     }
 
+    /**
+     * Adds the specified Button components to the provided ToolBar.
+     *
+     * @param toolBar The ToolBar to which the buttons will be added.
+     * @param buttons The Button components to be added to the ToolBar.
+     */
+    private void addComponents(ToolBar toolBar, Button... buttons) {
+        toolBar.getItems().addAll(buttons);
+    }
 }

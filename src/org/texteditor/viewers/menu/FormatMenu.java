@@ -2,60 +2,74 @@ package org.texteditor.viewers.menu;
 
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import org.texteditor.TextEditorUtils;
+import org.texteditor.controllers.EventController;
 
+import static org.texteditor.TextEditorApplication.createIcon;
+import static org.texteditor.viewers.menu.MenuItemCreator.createMenuItem;
+
+/**
+ * The FormatMenu class represents a menu for handling text formatting operations in the text editor.
+ */
 public class FormatMenu extends Menu implements CustomMenu {
 
-    public FormatMenu() {
+    private final EventController eventController;
+
+    /**
+     * Constructs a FormatMenu with the specified EventController.
+     *
+     * @param eventController The EventController for handling text formatting events.
+     */
+    public FormatMenu(EventController eventController) {
         super("Formatar");
-    }
-
-    @Override
-    public void configure() {
-        setId("format-menu");
-
-        MenuItem codificationANSIItem = createNewItem("Codificação em ANSI    ", this::onCodificationANSIEvent);
-        codificationANSIItem.setGraphic(TextEditorUtils.createIcon("media/type.png"));
-
-        MenuItem codificationUTF8Item = createNewItem("Codificação em UTF-8    ", this::onCodificationUTF8Event);
-        codificationUTF8Item.setGraphic(TextEditorUtils.createIcon("media/type.png"));
-
-        MenuItem convertANSIItem = createNewItem("Converter para ANSI    ", this::onConvertANSIEvent);
-        convertANSIItem.setGraphic(TextEditorUtils.createIcon("media/type.png"));
-
-        MenuItem convertUTF8Item = createNewItem("Converter para UTF-8    ", this::onConvertUTF8Event);
-        convertUTF8Item.setGraphic(TextEditorUtils.createIcon("media/type.png"));
-
-        addComponents(codificationANSIItem, codificationUTF8Item,
-                convertANSIItem, convertUTF8Item);
-    }
-
-    private void onCodificationANSIEvent() {
-
-    }
-
-    private void onCodificationUTF8Event() {
-
-    }
-
-    private void onConvertANSIEvent() {
-
-    }
-
-    private void onConvertUTF8Event() {
-
+        this.eventController = eventController;
     }
 
     /**
-     * Creates a MenuItem for creating a new item.
-     *
-     * @return MenuItem for creating a new item
+     * Configures the menu items and their associated actions.
      */
-    private MenuItem createNewItem(String content, Runnable eventHandler) {
-        MenuItem newItem = new MenuItem(content);
-        newItem.setId("new-item");
-        newItem.setOnAction(actionEvent -> eventHandler.run());
-        return newItem;
+    @Override
+    public void configure() {
+        setId("format-menu");
+        configureCodificationANSIMenuItem();
+        configureCodificationUTF8MenuItem();
+        configureConvertANSIMenuItem();
+        configureConvertUTF8MenuItem();
+    }
+
+    /**
+     * Configures the Codification ANSI menu item and its associated action.
+     */
+    private void configureCodificationANSIMenuItem() {
+        MenuItem codificationANSIItem = createMenuItem("Codificação em ANSI", eventController::onCodificationANSIEvent);
+        codificationANSIItem.setGraphic(createIcon("media/type.png"));
+        addComponents(codificationANSIItem);
+    }
+
+    /**
+     * Configures the Codification UTF-8 menu item and its associated action.
+     */
+    private void configureCodificationUTF8MenuItem() {
+        MenuItem codificationUTF8Item = createMenuItem("Codificação em UTF-8", eventController::onCodificationUTF8Event);
+        codificationUTF8Item.setGraphic(createIcon("media/type.png"));
+        addComponents(codificationUTF8Item);
+    }
+
+    /**
+     * Configures the Convert ANSI menu item and its associated action.
+     */
+    private void configureConvertANSIMenuItem() {
+        MenuItem convertANSIItem = createMenuItem("Converter para ANSI", eventController::onConvertANSIEvent);
+        convertANSIItem.setGraphic(createIcon("media/type.png"));
+        addComponents(convertANSIItem);
+    }
+
+    /**
+     * Configures the Convert UTF-8 menu item and its associated action.
+     */
+    private void configureConvertUTF8MenuItem() {
+        MenuItem convertUTF8Item = createMenuItem("Converter para UTF-8", eventController::onConvertUTF8Event);
+        convertUTF8Item.setGraphic(createIcon("media/type.png"));
+        addComponents(convertUTF8Item);
     }
 
     /**

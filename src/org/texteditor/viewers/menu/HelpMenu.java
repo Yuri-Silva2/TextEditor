@@ -2,40 +2,31 @@ package org.texteditor.viewers.menu;
 
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import org.texteditor.TextEditorUtils;
+import org.texteditor.controllers.EventController;
+
+import static org.texteditor.TextEditorApplication.createIcon;
+import static org.texteditor.viewers.menu.MenuItemCreator.createMenuItem;
 
 public class HelpMenu extends Menu implements CustomMenu {
 
-    public HelpMenu() {
+    private final EventController eventController;
+
+    public HelpMenu(EventController eventController) {
         super("?");
+        this.eventController = eventController;
     }
 
     @Override
     public void configure() {
         setId("help-menu");
+        configureUpdateMenuItem();
+    }
 
-        MenuItem updateItem = createNewItem(this::onUpdateEvent);
-        updateItem.setGraphic(TextEditorUtils.createIcon("media/update.png"));
-
+    private void configureUpdateMenuItem() {
+        MenuItem updateItem = createMenuItem("Atualizar...", eventController::onUpdateEvent);
+        updateItem.setGraphic(createIcon("media/update.png"));
         addComponents(updateItem);
     }
-
-    private void onUpdateEvent() {
-
-    }
-
-    /**
-     * Creates a MenuItem for creating a new item.
-     *
-     * @return MenuItem for creating a new item
-     */
-    private MenuItem createNewItem(Runnable eventHandler) {
-        MenuItem newItem = new MenuItem("Atualizar...    ");
-        newItem.setId("new-item");
-        newItem.setOnAction(actionEvent -> eventHandler.run());
-        return newItem;
-    }
-
     /**
      * Adds an array of MenuItems to the menu.
      *

@@ -1,2 +1,5 @@
 1- Revisar a condição estática da classe ModelController
 2- Testar fechamento de abas
+3- Rever a nomeação de alguns metodos
+4- Adicionar botão de imprimir
+5- Adicionar função fechar e fechar todos

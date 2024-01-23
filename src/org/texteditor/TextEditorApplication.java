@@ -4,28 +4,38 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.texteditor.controllers.EventController;
 import org.texteditor.controllers.FileController;
-import org.texteditor.controllers.HistoricalController;
-import org.texteditor.controllers.TextFileController;
 import org.texteditor.controllers.TabController;
+import org.texteditor.controllers.TextFileController;
 import org.texteditor.models.TextFile;
+import org.texteditor.viewers.pane.AlertPane;
 import org.texteditor.viewers.pane.TextEditorPane;
 
 import java.util.Objects;
 import java.util.UUID;
 
-import static org.texteditor.TextEditorUtils.createAlertPane;
-
+/**
+ * Represents the main application class for the text editor.
+ * Extends the JavaFX Application class and provides the entry point for launching the application.
+ */
 public class TextEditorApplication extends Application {
 
     private static final String APPLICATION_TITLE = "Editor de texto";
     private static final int INITIAL_SCENE_WIDTH = 1320;
     private static final int INITIAL_SCENE_HEIGHT = 860;
 
-    private TabController tabController;
+    private static TextFileController textFileController;
+    private EventController eventController;
     private FileController fileController;
+    private TabController tabController;
+
+    private static Stage primaryStage;
 
     /**
      * Main method to launch the JavaFX application.
@@ -37,17 +47,17 @@ public class TextEditorApplication extends Application {
     }
 
     /**
-     * Overrides thew star() method of the Application class.
+     * Overrides the start() method of the Application class.
      *
      * @param primaryStage The main stage (window) of the application
      */
     @Override
     public void start(Stage primaryStage) {
         try {
+            TextEditorApplication.primaryStage = primaryStage;
             initializeControllers(primaryStage);
 
-            TextEditorPane textEditorPane = new TextEditorPane(tabController,
-                    fileController);
+            TextEditorPane textEditorPane = new TextEditorPane(eventController);
             textEditorPane.configure();
 
             Scene scene = new Scene(textEditorPane, INITIAL_SCENE_WIDTH, INITIAL_SCENE_HEIGHT);
@@ -72,9 +82,11 @@ public class TextEditorApplication extends Application {
      * @param stage The main stage of the application
      */
     private void initializeControllers(Stage stage) {
-        HistoricalController historicalController = new HistoricalController();
-        tabController = new TabController(stage, historicalController);
+        textFileController = new TextFileController();
+        tabController = new TabController(stage);
         fileController = new FileController(stage);
+        eventController = new EventController(textFileController,
+                tabController, fileController);
     }
 
     /**
@@ -98,40 +110,47 @@ public class TextEditorApplication extends Application {
         TextFile textFile = new TextFile(UUID.randomUUID(),
                 name, null, "", false);
 
-        TextFileController.addTextFile(textFile);
+        textFileController.addTextFile(textFile);
 
-        Tab newTab = tabController.createNewTab(textFile.name(),
+        Tab newTab = tabController.createNewTab(textFile, textFile.name(),
                 textFile.uuid().toString(), textFile.text());
-        configureCloseEvent(newTab, tabPane);
 
         tabController.addTab(newTab, tabPane);
         tabController.selectedAndFocusTab(newTab, tabPane);
     }
 
     /**
-     * Configures the close event for a Tab, prompting the user to save unsaved changes.
+     * Creates an alert pane for handling specific situations.
      *
-     * @param tab     The tab to configure the close event for
-     * @param tabPane The TabPane to get tab
+     * @param tabPane The TabPane associated with the alert pane
      */
-    private void configureCloseEvent(Tab tab, TabPane tabPane) {
-        tab.setOnCloseRequest(event -> {
-            Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
-            String tabId = selectedTab.getId();
+    public static void createAlertPane(TabPane tabPane) {
+        Stage newStage = new Stage();
 
-            TextFile textFile = TextFileController.requestTextFile(tabId);
+        AlertPane alertPane = new AlertPane(newStage, new FileController(newStage), textFileController);
+        alertPane.configure(tabPane);
 
-            if (!textFile.saved()) {
-                event.consume();
-                showUnsavedChangesAlert();
-            }
-        });
+        Scene scene = new Scene(alertPane, 300, 165);
+
+        newStage.setScene(scene);
+        newStage.initOwner(primaryStage);
+        newStage.initModality(Modality.APPLICATION_MODAL);
+        newStage.initStyle(StageStyle.UTILITY);
+        newStage.setTitle("Salvar");
+        newStage.show();
     }
 
     /**
-     * Displays an alert for unsaved changes.
+     * Creates an ImageView for an icon based on the specified URL.
+     *
+     * @param url The URL of the icon image
+     * @return ImageView for the specified icon
      */
-    private void showUnsavedChangesAlert() {
-        createAlertPane(tabController);
+    public static ImageView createIcon(String url) {
+        Image openIcon = new Image(String.valueOf(TextEditorApplication.class.getResource(url)));
+        ImageView iconView = new ImageView(openIcon);
+        iconView.setFitHeight(17.0);
+        iconView.setFitWidth(17.0);
+        return iconView;
     }
 }
