@@ -1,6 +1,7 @@
 package org.texteditor.viewers.pane;
 
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.VBox;
 
 /**
  * The WriterPane class extends TabPane and is responsible for managing multiple tabs,

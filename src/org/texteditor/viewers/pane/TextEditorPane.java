@@ -1,6 +1,11 @@
 package org.texteditor.viewers.pane;
 
+import javafx.geometry.Orientation;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import org.texteditor.controllers.EventController;
 import org.texteditor.controllers.FileController;
 import org.texteditor.controllers.TabController;
@@ -21,7 +26,7 @@ public class TextEditorPane extends BorderPane {
 
     /**
      * Configures the layout and components of the TextEditorPane.
-     * Sets and ID, creates a UtilitiesPane and WriterPane, and adds them to the BorderPane.
+     * Sets and ID, creates a UtilitiesPane, ScrollBar, WriterPane, and adds them to the BorderPane.
      */
     public void configure() {
         setId("texteditor-borderpane");
@@ -29,8 +34,25 @@ public class TextEditorPane extends BorderPane {
         UtilitiesPane utilitiesPane = createUtilitiesPane();
         WriterPane writerPane = createWriterPane();
 
+        HBox infoPane = createHBoxPane();
+
         setTop(utilitiesPane);
         setCenter(writerPane);
+        setBottom(infoPane);
+    }
+
+    /**
+     * Creates and returns a new HBox, configured with default settings.
+     *
+     * @return The created HBox
+     */
+    private HBox createHBoxPane() {
+        HBox infoPane = new HBox();
+        Label label = new Label("");
+        label.setId("info-label");
+        infoPane.getChildren().add(label);
+        infoPane.setPrefHeight(18.0);
+        return infoPane;
     }
 
     /**
@@ -44,6 +66,11 @@ public class TextEditorPane extends BorderPane {
         return writerPane;
     }
 
+    /**
+     * Creates and returns a new UtilitiesPane, configured with default settings.
+     *
+     * @return The created UtilitiesPane
+     */
     private UtilitiesPane createUtilitiesPane() {
         UtilitiesPane utilitiesPane = new UtilitiesPane(eventController);
         utilitiesPane.configure();

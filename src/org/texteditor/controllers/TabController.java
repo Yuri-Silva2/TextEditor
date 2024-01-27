@@ -1,7 +1,9 @@
 package org.texteditor.controllers;
 
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
@@ -13,8 +15,6 @@ import org.texteditor.models.TextFile;
  * Controller class for managing tabs in the text editor.
  */
 public class TabController {
-
-    private final String WRITER_TABPANE_ID = "#writer-tabpane";
 
     private final Stage stage;
 
@@ -32,7 +32,11 @@ public class TabController {
      */
     public Tab createNewTab(TextFile textFile, String tabName, String id, String content) {
         Tab tab = new Tab(tabName);
-        tab.setContent(new TextArea(content));
+        TextArea textArea = new TextArea(content);
+        textArea.setWrapText(true);
+        textArea.get
+        defineTabEvent(textArea);
+        tab.setContent(textArea);
         tab.setId(id);
         configureCloseEvent(tab, textFile);
         return tab;
@@ -80,6 +84,33 @@ public class TabController {
      */
     public TabPane lookupTabPane() {
         Scene scene = stage.getScene();
+        String WRITER_TABPANE_ID = "#writer-tabpane";
         return (TabPane) scene.lookup(WRITER_TABPANE_ID);
+    }
+
+    /**
+     * Looks up and returns Label from the current scene.
+     *
+     * @return The Label if found, null otherwise.
+     */
+    private Label lookupLabel() {
+        Scene scene = stage.getScene();
+        String LABEL_ID = "#info-label";
+        return (Label) scene.lookup(LABEL_ID);
+    }
+
+    /**
+     *
+     *
+     * @param textArea
+     */
+    private void defineTabEvent(TextArea textArea) {
+        textArea.setOnKeyTyped(keyEvent -> {
+            ObservableList<CharSequence> list = textArea.getParagraphs();
+            int par = list.size();
+            String[] words = textArea.getText().split("\\s+");
+            lookupLabel().setText("Paragraph: " + par + "   |   Words: " + words.length
+                    + "   |   Characters: " + textArea.getLength());
+        });
     }
 }
