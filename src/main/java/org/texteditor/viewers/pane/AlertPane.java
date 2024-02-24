@@ -23,6 +23,13 @@ public class AlertPane extends BorderPane implements CustomPane {
 
     private final Stage stage;
 
+    /**
+     * Constructs a new AlertPane with the specified stages and event controller.
+     *
+     * @param cStage          The primary stage of the application.
+     * @param stage           The stage associated with the AlertPane.
+     * @param eventController The EventController instance to use for handling events.
+     */
     public AlertPane(Stage cStage, Stage stage, EventController eventController) {
         super();
         this.cStage = cStage;
@@ -104,7 +111,7 @@ public class AlertPane extends BorderPane implements CustomPane {
 
         Button saveButton = createSaveButton(tabPane);
         Button doNotSaveButton = createDoNotSaveButton(tabPane);
-        Button cancelButton = createCancelButton(tabPane);
+        Button cancelButton = createCancelButton();
 
         anchorPaneBottom.getChildren().addAll(saveButton, doNotSaveButton, cancelButton);
 
@@ -169,11 +176,10 @@ public class AlertPane extends BorderPane implements CustomPane {
     /**
      * Creates and returns a "Cancel" button for an alert pane.
      *
-     * @param tabPane The TabPane associated with the alert pane.
      * @return A Button with the label "Cancelar" (Cancel) and event handler
      * set to invoke the onAlertPaneCancelEvent method.
      */
-    private Button createCancelButton(TabPane tabPane) {
+    private Button createCancelButton() {
         Button button = new Button("Cancelar");
         button.setLayoutX(214);
         button.setLayoutY(27);

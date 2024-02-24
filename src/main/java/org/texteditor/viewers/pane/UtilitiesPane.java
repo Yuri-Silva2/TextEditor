@@ -53,8 +53,7 @@ public class UtilitiesPane extends AnchorPane {
     private Menu[] getMenus() {
         return new Menu[]{createFileMenu(), createEditMenu(),
                 createLocateMenu(), createViewMenu(),
-                createFormatMenu(), createConfigMenu(),
-                createHelpMenu()};
+                createFormatMenu(), createHelpMenu()};
     }
 
     /**
@@ -76,8 +75,7 @@ public class UtilitiesPane extends AnchorPane {
                 createButton(createIcon("find.png"), "Localizar...", eventController::onLocateEvent),
                 createButton(createIcon("find_replace.png"), "Substituir...", eventController::onFindAndReplaceEvent),
                 createButton(createIcon("zoom_in.png"), "Ampliar", eventController::onEnlargeEvent),
-                createButton(createIcon("zoom_out.png"), "Reduzir", eventController::onReduceEvent),
-                createButton(createIcon("segment.png"), "Quebrar linhas automaticamente", eventController::onLineStyleEvent)};
+                createButton(createIcon("zoom_out.png"), "Reduzir", eventController::onReduceEvent)};
     }
 
     /**
@@ -152,8 +150,8 @@ public class UtilitiesPane extends AnchorPane {
      *
      * @return The created LocateMenu
      */
-    private LocateMenu createLocateMenu() {
-        LocateMenu locateMenu = new LocateMenu(eventController);
+    private FindMenu createLocateMenu() {
+        FindMenu locateMenu = new FindMenu(eventController);
         locateMenu.configure();
         return locateMenu;
     }
@@ -178,17 +176,6 @@ public class UtilitiesPane extends AnchorPane {
         FormatMenu formatMenu = new FormatMenu(eventController);
         formatMenu.configure();
         return formatMenu;
-    }
-
-    /**
-     * Creates and returns a new ConfigMenu, configured with the provided controllers.
-     *
-     * @return The created ConfigMenu
-     */
-    private ConfigMenu createConfigMenu() {
-        ConfigMenu configMenu = new ConfigMenu(eventController);
-        configMenu.configure();
-        return configMenu;
     }
 
     /**

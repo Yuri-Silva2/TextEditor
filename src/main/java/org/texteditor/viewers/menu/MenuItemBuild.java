@@ -5,6 +5,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 
+/**
+ * The MenuItemBuild class provides static methods for creating MenuItems with specific properties,
+ * such as labels, event handlers, and keyboard shortcuts.
+ */
 public class MenuItemBuild {
 
     /**

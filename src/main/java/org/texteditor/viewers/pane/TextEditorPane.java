@@ -13,6 +13,11 @@ public class TextEditorPane extends BorderPane {
 
     private final EventController eventController;
 
+    /**
+     * Constructs a new TextEditorPane with the specified event controller.
+     *
+     * @param eventController The EventController instance to use for handling events.
+     */
     public TextEditorPane(EventController eventController) {
         super();
         this.eventController = eventController;
@@ -42,9 +47,9 @@ public class TextEditorPane extends BorderPane {
      */
     private HBox createHBoxPane() {
         HBox infoPane = new HBox();
-        Label label = new Label("Paragraph: 0   |   Words: 0   |   Characters:   0");
-        label.setId("info-label");
-        infoPane.getChildren().add(label);
+        Label infoLabel = new Label("Paragraph: 0   |   Words: 0   |   Characters:   0");
+        infoLabel.setId("info-label");
+        infoPane.getChildren().add(infoLabel);
         infoPane.setPrefHeight(18.0);
         return infoPane;
     }

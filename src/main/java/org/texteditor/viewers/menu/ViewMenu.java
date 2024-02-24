@@ -36,8 +36,6 @@ public class ViewMenu extends Menu implements CustomMenu {
         configureLargeMenuItem();
         configureReduceMenuItem();
         configureRestoreDefaultZoomMenuItem();
-        configureFileInformationMenuItem();
-        configureLineStyleMenuItem();
     }
 
     /**
@@ -68,24 +66,6 @@ public class ViewMenu extends Menu implements CustomMenu {
                 KeyCode.SLASH, KeyCombination.CONTROL_DOWN);
         restoreDefaultZoomItem.setGraphic(createIcon("zoom_default.png"));
         addComponents(restoreDefaultZoomItem);
-    }
-
-    /**
-     * Configures the menu item for displaying file information.
-     */
-    private void configureFileInformationMenuItem() {
-        MenuItem fileInformationItem = createMenuItem("Informações sobre o arquivo...", eventController::onFileInformationEvent);
-        fileInformationItem.setGraphic(createIcon("informations.png"));
-        addComponents(fileInformationItem);
-    }
-
-    /**
-     * Configures the menu item for toggling automatic line breaking.
-     */
-    private void configureLineStyleMenuItem() {
-        MenuItem lineStyleItem = createMenuItem("Quebrar linhas automaticamente", eventController::onLineStyleEvent);
-        lineStyleItem.setGraphic(createIcon("segment.png"));
-        addComponents(lineStyleItem);
     }
 
     /**

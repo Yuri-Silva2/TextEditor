@@ -12,7 +12,7 @@ import static org.texteditor.viewers.menu.MenuItemBuild.createMenuItem;
 /**
  * The LocateMenu class represents a menu for handling text locating and searching operations in the text editor.
  */
-public class LocateMenu extends Menu implements CustomMenu {
+public class FindMenu extends Menu implements CustomMenu {
 
     private final EventController eventController;
 
@@ -21,7 +21,7 @@ public class LocateMenu extends Menu implements CustomMenu {
      *
      * @param eventController The EventController for handling text locating events.
      */
-    public LocateMenu(EventController eventController) {
+    public FindMenu(EventController eventController) {
         super("Localizar");
         this.eventController = eventController;
     }
@@ -33,10 +33,8 @@ public class LocateMenu extends Menu implements CustomMenu {
     public void configure() {
         setId("locate-menu");
         configureLocateMenuItem();
-        configureFindInFilesMenuItem();
-        configureFindNearbyMenuItem();
-        configureFindPreviousMenuItem();
         configureFindAndReplaceMenuItem();
+        configureFindNearbyMenuItem();
     }
 
     /**
@@ -50,13 +48,13 @@ public class LocateMenu extends Menu implements CustomMenu {
     }
 
     /**
-     * Configures the Find in Files menu item and its associated action.
+     * Configures the Find and Replace menu item and its associated action.
      */
-    private void configureFindInFilesMenuItem() {
-        MenuItem findInFilesItem = createMenuItem("Localizar em arquivos", eventController::onFindInFilesEvent,
-                KeyCode.F, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        findInFilesItem.setGraphic(createIcon("find_in_file.png"));
-        addComponents(findInFilesItem);
+    private void configureFindAndReplaceMenuItem() {
+        MenuItem findAndReplaceItem = createMenuItem("Substituir", eventController::onFindAndReplaceEvent,
+                KeyCode.H, KeyCombination.CONTROL_DOWN);
+        findAndReplaceItem.setGraphic(createIcon("find_replace.png"));
+        addComponents(findAndReplaceItem);
     }
 
     /**
@@ -67,26 +65,6 @@ public class LocateMenu extends Menu implements CustomMenu {
                 KeyCode.F3);
         findNearbyItem.setGraphic(createIcon("find.png"));
         addComponents(findNearbyItem);
-    }
-
-    /**
-     * Configures the Find Previous menu item and its associated action.
-     */
-    private void configureFindPreviousMenuItem() {
-        MenuItem findPreviousItem = createMenuItem("Localizar anterior", eventController::onFindPreviousEvent,
-                KeyCode.F, KeyCombination.SHIFT_DOWN);
-        findPreviousItem.setGraphic(createIcon("find.png"));
-        addComponents(findPreviousItem);
-    }
-
-    /**
-     * Configures the Find and Replace menu item and its associated action.
-     */
-    private void configureFindAndReplaceMenuItem() {
-        MenuItem findAndReplaceItem = createMenuItem("Substituir", eventController::onFindAndReplaceEvent,
-                KeyCode.H, KeyCombination.CONTROL_DOWN);
-        findAndReplaceItem.setGraphic(createIcon("find_replace.png"));
-        addComponents(findAndReplaceItem);
     }
 
     /**

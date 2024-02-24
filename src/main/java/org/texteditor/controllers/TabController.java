@@ -1,5 +1,6 @@
 package org.texteditor.controllers;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -7,10 +8,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.texteditor.Main;
+import org.texteditor.enums.Codification;
 import org.texteditor.model.TextFile;
 
 /**
@@ -19,6 +26,8 @@ import org.texteditor.model.TextFile;
 public class TabController {
 
     private final Stage stage;
+
+    private VBox vBox;
 
     public TabController(Stage stage) {
         this.stage = stage;
@@ -41,12 +50,17 @@ public class TabController {
         VBox vBox = createLineNumberVBox(textArea);
 
         BorderPane borderPane = createBorderPane(textArea, vBox);
+
+        defineScrollEvent(borderPane, textArea, vBox);
+
         tab.setContent(borderPane);
 
         defineTabCloseEvent(tab, textFile);
 
         textArea.textProperty().addListener((obs, oldText, newText) ->
                 updateLineNumber(textArea, vBox));
+
+        this.vBox = vBox;
 
         return tab;
     }
@@ -59,8 +73,9 @@ public class TabController {
      */
     private TextArea initializeTextArea(String content) {
         TextArea textArea = new TextArea(content);
-        textArea.setWrapText(true);
         defineKeyTypeEvent(textArea);
+        defineWritingEvent(textArea);
+
         return textArea;
     }
 
@@ -72,7 +87,8 @@ public class TabController {
      */
     private VBox createLineNumberVBox(TextArea textArea) {
         VBox vBox = new VBox();
-        vBox.setPrefWidth(19.0);
+        vBox.setPrefWidth(40.0);
+        vBox.setId("line-box");
         updateLineNumber(textArea, vBox);
         return vBox;
     }
@@ -92,6 +108,24 @@ public class TabController {
     }
 
     /**
+     * Handles the paste event, updating line numbers and label after pasting.
+     *
+     * @param textArea The TextArea for which the paste event is handled.
+     */
+    private void handlePaste(TextArea textArea) {
+        Platform.runLater(() -> {
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            if (clipboard.hasContent(DataFormat.PLAIN_TEXT)) {
+                updateLineNumber(textArea, this.vBox);
+                ObservableList<CharSequence> list = textArea.getParagraphs();
+                int par = list.size();
+                String[] words = textArea.getText().split("\\s+");
+                updateLabel(par, words.length, textArea.getLength());
+            }
+        });
+    }
+
+    /**
      * Updates the line numbers displayed in the VBox based on the TextArea content.
      *
      * @param textArea   The TextArea for which line numbers are displayed.
@@ -103,8 +137,33 @@ public class TabController {
         int totalLines = textArea.getText().split("\n").length;
 
         for (int i = 1; i <= totalLines; i++) {
-            lineNumber.getChildren().add(new Label("  " + i));
+            lineNumber.getChildren().add(new Label("    " + i));
         }
+    }
+
+    /**
+     * Defines the scroll event for the given BorderPane, TextArea, and VBox.
+     * This event adjusts the font size of the TextArea and the VBox width
+     * based on the scroll direction.
+     *
+     * @param borderPane The BorderPane to which the scroll event is applied.
+     * @param textArea   The TextArea whose font size will be adjusted.
+     * @param vBox       The VBox whose width will be adjusted based on font size.
+     */
+    private void defineScrollEvent(BorderPane borderPane, TextArea textArea, VBox vBox) {
+        borderPane.setOnScroll(event -> {
+            double deltaY = event.getDeltaY();
+            Font font = textArea.getFont();
+            double newSize = font.getSize();
+
+            if (deltaY < 0) newSize /= 1.05;
+            else newSize *= 1.05;
+
+            vBox.setPrefWidth(Main.findSizeToWidth(newSize, vBox));
+
+            textArea.setStyle("-fx-font-size: " + newSize + "px;");
+            vBox.setStyle("-fx-font-size: " + newSize + "px;");
+        });
     }
 
     /**
@@ -117,7 +176,7 @@ public class TabController {
         tab.setOnCloseRequest(event -> {
             if (!textFile.saved()) {
                 event.consume();
-                Main.createAlertPane();
+                Main.showAlertPane();
             }
         });
     }
@@ -130,10 +189,31 @@ public class TabController {
     private void defineKeyTypeEvent(TextArea textArea) {
         textArea.setOnKeyTyped(keyEvent -> {
             ObservableList<CharSequence> list = textArea.getParagraphs();
-            int par = list.size();
+            int paragraphCount = list.size();
             String[] words = textArea.getText().split("\\s+");
-            lookupLabel().setText("Paragraph: " + par + "   |   Words: " + words.length
-                    + "   |   Characters: " + textArea.getLength());
+            updateLabel(paragraphCount, words.length, textArea.getLength());
+        });
+
+        textArea.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if ((keyEvent.isShortcutDown() && keyEvent.getCode() == KeyCode.V) ||
+                    (keyEvent.isMetaDown() && keyEvent.getCode() == KeyCode.V)) {
+                handlePaste(textArea);
+            }
+        });
+    }
+
+    /**
+     * Defines the writing event for a TextArea, converting the present text.
+     *
+     * @param textArea The TextArea for which the writing event is defined.
+     */
+    private void defineWritingEvent(TextArea textArea) {
+        textArea.textProperty().addListener((obs, oldValue, newValue) -> {
+            Codification codification = Main.getCodification();
+
+            String convertedText = Main.convertText(newValue, codification);
+
+            textArea.setText(convertedText);
         });
     }
 

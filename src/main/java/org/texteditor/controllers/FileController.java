@@ -3,9 +3,7 @@ package org.texteditor.controllers;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
@@ -32,6 +30,9 @@ public class FileController {
         this.stage = stage;
     }
 
+    /**
+     * Creates a default folder at the specified path if it does not already exist.
+     */
     public void createDefaultFolder() {
         File file = new File(TEMP_FILES_PATH);
         if (file.exists()) return;
@@ -57,24 +58,6 @@ public class FileController {
      */
     public void writeFile(String filePath, String fileText) {
         File file = new File(filePath);
-
-        try (FileWriter fileWriter = new FileWriter(file, false)) {
-            fileWriter.write(fileText);
-
-        } catch (IOException e) {
-            logger.log(Level.WARNING, e.toString());
-        }
-    }
-
-    /**
-     * Writes the given text to a file with a specified id, extension, and content.
-     *
-     * @param id        The identifier for the file.
-     * @param extension The file extension.
-     * @param fileText  The text to be written to the file.
-     */
-    public void writeFile(String id, String extension, String fileText) {
-        File file = new File(TEMP_FILES_PATH + id + extension);
 
         try (FileWriter fileWriter = new FileWriter(file, false)) {
             fileWriter.write(fileText);
@@ -137,10 +120,5 @@ public class FileController {
         fileChooser.getExtensionFilters().add(FILES_EXTENSION);
 
         return fileChooser.showSaveDialog(stage);
-    }
-
-    // Placeholder method for reading multiple files (not implemented)
-    public Map<String, String> readFiles() {
-        return null;
     }
 }
