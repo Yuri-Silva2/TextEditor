@@ -43,9 +43,9 @@ public class LocateTabBuild {
     /**
      * Creates a Text node with the specified content and position.
      *
-     * @param arg The text content of the Text node.
-     * @param xCord   The x-coordinate of the Text node's position.
-     * @param yCord   The y-coordinate of the Text node's position.
+     * @param arg   The text content of the Text node.
+     * @param xCord The x-coordinate of the Text node's position.
+     * @param yCord The y-coordinate of the Text node's position.
      * @return The Text node with the specified content and position.
      */
     protected static Text createText(String arg, double xCord, double yCord) {

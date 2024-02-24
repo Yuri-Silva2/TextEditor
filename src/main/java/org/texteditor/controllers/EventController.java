@@ -795,8 +795,7 @@ public class EventController {
         for (Window window : Window.getWindows()) {
             String title = ((Stage) window).getTitle();
             if (title.equalsIgnoreCase("Localizar") ||
-                    title.equalsIgnoreCase("Substituir") ||
-                    title.equalsIgnoreCase("Localizar nos arquivos")) {
+                    title.equalsIgnoreCase("Substituir")) {
                 return (Stage) window;
             }
         }

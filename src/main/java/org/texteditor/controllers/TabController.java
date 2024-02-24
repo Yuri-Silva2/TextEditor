@@ -142,82 +142,6 @@ public class TabController {
     }
 
     /**
-     * Defines the scroll event for the given BorderPane, TextArea, and VBox.
-     * This event adjusts the font size of the TextArea and the VBox width
-     * based on the scroll direction.
-     *
-     * @param borderPane The BorderPane to which the scroll event is applied.
-     * @param textArea   The TextArea whose font size will be adjusted.
-     * @param vBox       The VBox whose width will be adjusted based on font size.
-     */
-    private void defineScrollEvent(BorderPane borderPane, TextArea textArea, VBox vBox) {
-        borderPane.setOnScroll(event -> {
-            double deltaY = event.getDeltaY();
-            Font font = textArea.getFont();
-            double newSize = font.getSize();
-
-            if (deltaY < 0) newSize /= 1.05;
-            else newSize *= 1.05;
-
-            vBox.setPrefWidth(Main.findSizeToWidth(newSize, vBox));
-
-            textArea.setStyle("-fx-font-size: " + newSize + "px;");
-            vBox.setStyle("-fx-font-size: " + newSize + "px;");
-        });
-    }
-
-    /**
-     * Defines the close event for a tab, prompting the user if the text file is not saved.
-     *
-     * @param tab      The tab for which the close event is defined.
-     * @param textFile The associated TextFile.
-     */
-    private void defineTabCloseEvent(Tab tab, TextFile textFile) {
-        tab.setOnCloseRequest(event -> {
-            if (!textFile.saved()) {
-                event.consume();
-                Main.showAlertPane();
-            }
-        });
-    }
-
-    /**
-     * Defines the key type event for a TextArea, updating the information label.
-     *
-     * @param textArea The TextArea for which the key type event is defined.
-     */
-    private void defineKeyTypeEvent(TextArea textArea) {
-        textArea.setOnKeyTyped(keyEvent -> {
-            ObservableList<CharSequence> list = textArea.getParagraphs();
-            int paragraphCount = list.size();
-            String[] words = textArea.getText().split("\\s+");
-            updateLabel(paragraphCount, words.length, textArea.getLength());
-        });
-
-        textArea.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
-            if ((keyEvent.isShortcutDown() && keyEvent.getCode() == KeyCode.V) ||
-                    (keyEvent.isMetaDown() && keyEvent.getCode() == KeyCode.V)) {
-                handlePaste(textArea);
-            }
-        });
-    }
-
-    /**
-     * Defines the writing event for a TextArea, converting the present text.
-     *
-     * @param textArea The TextArea for which the writing event is defined.
-     */
-    private void defineWritingEvent(TextArea textArea) {
-        textArea.textProperty().addListener((obs, oldValue, newValue) -> {
-            Codification codification = Main.getCodification();
-
-            String convertedText = Main.convertText(newValue, codification);
-
-            textArea.setText(convertedText);
-        });
-    }
-
-    /**
      * Updates the information label with paragraph count, word count, and character count.
      *
      * @param paragraphCount The number of paragraphs.
@@ -273,5 +197,81 @@ public class TabController {
         tabPane.getSelectionModel().select(tab);
         Node contentNode = tab.getContent();
         if (contentNode instanceof TextArea) contentNode.requestFocus();
+    }
+
+    /**
+     * Defines the key type event for a TextArea, updating the information label.
+     *
+     * @param textArea The TextArea for which the key type event is defined.
+     */
+    private void defineKeyTypeEvent(TextArea textArea) {
+        textArea.setOnKeyTyped(keyEvent -> {
+            ObservableList<CharSequence> list = textArea.getParagraphs();
+            int paragraphCount = list.size();
+            String[] words = textArea.getText().split("\\s+");
+            updateLabel(paragraphCount, words.length, textArea.getLength());
+        });
+
+        textArea.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if ((keyEvent.isShortcutDown() && keyEvent.getCode() == KeyCode.V) ||
+                    (keyEvent.isMetaDown() && keyEvent.getCode() == KeyCode.V)) {
+                handlePaste(textArea);
+            }
+        });
+    }
+
+    /**
+     * Defines the writing event for a TextArea, converting the present text.
+     *
+     * @param textArea The TextArea for which the writing event is defined.
+     */
+    private void defineWritingEvent(TextArea textArea) {
+        textArea.textProperty().addListener((obs, oldValue, newValue) -> {
+            Codification codification = Main.getCodification();
+
+            String convertedText = Main.convertText(newValue, codification);
+
+            textArea.setText(convertedText);
+        });
+    }
+
+    /**
+     * Defines the scroll event for the given BorderPane, TextArea, and VBox.
+     * This event adjusts the font size of the TextArea and the VBox width
+     * based on the scroll direction.
+     *
+     * @param borderPane The BorderPane to which the scroll event is applied.
+     * @param textArea   The TextArea whose font size will be adjusted.
+     * @param vBox       The VBox whose width will be adjusted based on font size.
+     */
+    private void defineScrollEvent(BorderPane borderPane, TextArea textArea, VBox vBox) {
+        borderPane.setOnScroll(event -> {
+            double deltaY = event.getDeltaY();
+            Font font = textArea.getFont();
+            double newSize = font.getSize();
+
+            if (deltaY < 0) newSize /= 1.05;
+            else newSize *= 1.05;
+
+            vBox.setPrefWidth(Main.findSizeToWidth(newSize, vBox));
+
+            textArea.setStyle("-fx-font-size: " + newSize + "px;");
+            vBox.setStyle("-fx-font-size: " + newSize + "px;");
+        });
+    }
+
+    /**
+     * Defines the close event for a tab, prompting the user if the text file is not saved.
+     *
+     * @param tab      The tab for which the close event is defined.
+     * @param textFile The associated TextFile.
+     */
+    private void defineTabCloseEvent(Tab tab, TextFile textFile) {
+        tab.setOnCloseRequest(event -> {
+            if (!textFile.saved()) {
+                event.consume();
+                Main.showAlertPane();
+            }
+        });
     }
 }
