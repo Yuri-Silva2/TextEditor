@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,8 +15,6 @@ import java.util.logging.Logger;
  * Controller class for managing file operations in the text editor.
  */
 public class FileController {
-
-    private final String TEMP_FILES_PATH = System.getProperty("user.home") + "\\Documents\\RedTextEditor\\temp-files\\";
 
     private final FileChooser.ExtensionFilter FILES_EXTENSION =
             new FileChooser.ExtensionFilter("Text Files", "*.txt");
@@ -29,17 +25,6 @@ public class FileController {
 
     public FileController(Stage stage) {
         this.stage = stage;
-    }
-
-    /**
-     * Checks if there is an unsaved file in the temporary files' directory.
-     *
-     * @return True if there is as unsaved file, false otherwise.
-     */
-    public boolean thereIsAnUnsavedFile() {
-        File path = new File(TEMP_FILES_PATH);
-        return path.exists() &&
-                Arrays.stream(Objects.requireNonNull(path.listFiles())).toList().isEmpty();
     }
 
     /**

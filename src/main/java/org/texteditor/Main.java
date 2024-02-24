@@ -128,8 +128,7 @@ public class Main extends Application {
      */
     private void checkSituation() {
         changeCodification(Codification.UTF_8);
-        if (fileController.thereIsAnUnsavedFile())
-            addNewTypingArea();
+        addNewTypingArea();
     }
 
     /**

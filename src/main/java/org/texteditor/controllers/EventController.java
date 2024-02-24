@@ -288,7 +288,9 @@ public class EventController {
 
         if (textFile.saved() && !saveAs)
             saveExistingFile(textArea, textFile);
-        else
+        else if (textFile.saved() && saveAs)
+            saveFileAsOperation(textArea, tab);
+        else if (!textFile.saved() && saveAs)
             saveFileAsOperation(textArea, tab);
     }
 
@@ -388,42 +390,6 @@ public class EventController {
         TabPane tabPane = tabController.lookupTabPane();
         tabController.addTab(newTab, tabPane);
         tabController.selectedAndFocusTab(newTab, tabPane);
-    }
-
-    /**
-     * Handles the event when the user selects ANSI codification.
-     * Calls the Main class to change the text codification to ANSI.
-     */
-    public void onCodificationANSIEvent() {
-        Main.changeCodification(Codification.ANSI);
-    }
-
-    /**
-     * Handles the event when the user selects UTF-8 codification.
-     * Calls the Main class to change the text codification to UTF-8.
-     */
-    public void onCodificationUTF8Event() {
-        Main.changeCodification(Codification.UTF_8);
-    }
-
-    /**
-     * Handles the event when the user wants to convert the text to ANSI codification.
-     * Retrieves the current text from the TextArea, converts it to ANSI, and sets the converted text back to the TextArea.
-     */
-    public void onConvertANSIEvent() {
-        TextArea textArea = getCurrentTextArea();
-        String convertedText = Main.convertText(textArea.getText(), Codification.ANSI);
-        textArea.setText(convertedText);
-    }
-
-    /**
-     * Handles the event when the user wants to convert the text to UTF-8 codification.
-     * Retrieves the current text from the TextArea, converts it to UTF-8, and sets the converted text back to the TextArea.
-     */
-    public void onConvertUTF8Event() {
-        TextArea textArea = getCurrentTextArea();
-        String convertedText = Main.convertText(textArea.getText(), Codification.UTF_8);
-        textArea.setText(convertedText);
     }
 
     public void onUpdateEvent() {

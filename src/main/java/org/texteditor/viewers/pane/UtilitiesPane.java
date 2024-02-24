@@ -53,7 +53,7 @@ public class UtilitiesPane extends AnchorPane {
     private Menu[] getMenus() {
         return new Menu[]{createFileMenu(), createEditMenu(),
                 createLocateMenu(), createViewMenu(),
-                createFormatMenu(), createHelpMenu()};
+                createHelpMenu()};
     }
 
     /**
@@ -165,17 +165,6 @@ public class UtilitiesPane extends AnchorPane {
         ViewMenu viewMenu = new ViewMenu(eventController);
         viewMenu.configure();
         return viewMenu;
-    }
-
-    /**
-     * Creates and returns a new FormatMenu, configured with the provided controllers.
-     *
-     * @return The created FormatMenu
-     */
-    private FormatMenu createFormatMenu() {
-        FormatMenu formatMenu = new FormatMenu(eventController);
-        formatMenu.configure();
-        return formatMenu;
     }
 
     /**

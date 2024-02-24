@@ -1,6 +1,8 @@
 package org.texteditor.controllers;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -28,6 +30,8 @@ public class TabController {
     private final Stage stage;
 
     private VBox vBox;
+
+    boolean updatingText = false;
 
     public TabController(Stage stage) {
         this.stage = stage;
@@ -57,8 +61,21 @@ public class TabController {
 
         defineTabCloseEvent(tab, textFile);
 
-        textArea.textProperty().addListener((obs, oldText, newText) ->
-                updateLineNumber(textArea, vBox));
+        textArea.textProperty().addListener((obs, oldText, newText) -> {
+            updateLineNumber(textArea, vBox);
+
+            Codification codification = Main.getCodification();
+
+            String convertedText = Main.convertText(newText, codification);
+
+            if (!convertedText.equals(textArea.getText())) {
+                if (convertedText.length() <= textArea.getLength()) {
+                    textArea.replaceText(0, textArea.getLength(), convertedText);
+                } else {
+                    textArea.replaceText(0, textArea.getLength(), convertedText.substring(0, textArea.getLength()));
+                }
+            }
+        });
 
         this.vBox = vBox;
 
@@ -74,7 +91,6 @@ public class TabController {
     private TextArea initializeTextArea(String content) {
         TextArea textArea = new TextArea(content);
         defineKeyTypeEvent(textArea);
-        defineWritingEvent(textArea);
 
         return textArea;
     }
@@ -217,21 +233,6 @@ public class TabController {
                     (keyEvent.isMetaDown() && keyEvent.getCode() == KeyCode.V)) {
                 handlePaste(textArea);
             }
-        });
-    }
-
-    /**
-     * Defines the writing event for a TextArea, converting the present text.
-     *
-     * @param textArea The TextArea for which the writing event is defined.
-     */
-    private void defineWritingEvent(TextArea textArea) {
-        textArea.textProperty().addListener((obs, oldValue, newValue) -> {
-            Codification codification = Main.getCodification();
-
-            String convertedText = Main.convertText(newValue, codification);
-
-            textArea.setText(convertedText);
         });
     }
 
