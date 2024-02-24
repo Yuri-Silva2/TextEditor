@@ -3,10 +3,11 @@ package org.texteditor.controllers;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -28,15 +29,6 @@ public class FileController {
 
     public FileController(Stage stage) {
         this.stage = stage;
-    }
-
-    /**
-     * Creates a default folder at the specified path if it does not already exist.
-     */
-    public void createDefaultFolder() {
-        File file = new File(TEMP_FILES_PATH);
-        if (file.exists()) return;
-        file.mkdirs();
     }
 
     /**
