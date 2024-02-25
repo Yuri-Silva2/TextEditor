@@ -17,6 +17,7 @@ usando uma interface com abas.
 
 - Salvamento automático das guias já salvas a cada X segundos.
 - Arquivos não salvos considerados temporários em memória para possível reabertura.
+- Suporte a outras línguas.
 - Layout personalizável.
 
 ## Como Começar
