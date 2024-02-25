@@ -1,47 +1,46 @@
 # Text Editor Application
 
-## Visão Geral
+## Overview
 
-O Aplicativo é um editor de texto baseado em JavaFX que permite aos usuários criar, editar e salvar arquivos de texto
-usando uma interface com abas.
+The Application is a JavaFX-based text editor that allows users to create, edit, and save text files using a tabbed interface.
 
-## Recursos
+## Resources
 
-- Criar, abrir e salvar arquivos de texto.
-- Interface com abas para trabalhar com vários arquivos simultaneamente.
-- Alerta para salvar alterações não salvas ao fechar uma aba.
-- Capacidade de pesquisa e substituição de palavras em massa.
-- Interface responsiva e amigável ao usuário.
+- Create, open and save text files.
+- Tabbed interface to work with multiple files simultaneously.
+- Alert to save unsaved changes when closing a tab.
+- Ability to search and replace words in bulk.
+- Responsive and user-friendly interface.
 
-## Futuros novos recursos
+## Features
 
-- Salvamento automático das guias já salvas a cada X segundos.
-- Arquivos não salvos considerados temporários em memória para possível reabertura.
-- Layout personalizável.
+- Automatic saving of already saved tabs every X seconds.
+- Unsaved files considered temporary in memory for possible reopening.
+- Customizable layout.
 
-## Como Começar
+## How to begin
 
-### Pré-requisitos
+### Prerequisites
 
-- Kit de Desenvolvimento Java (JDK) instalado
-- Biblioteca JavaFX
-- Apache Commons Lang ( StringUtils )
+- Java Development Kit (JDK) installed.
+- JavaFX Library.
+- Apache Commons Lang ( StringUtils ).
 
-### Instalação
+### Installation
 
-1. Clone o repositório:
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/Yuri-Silva2/TextEditor.git
 ```
 
-2. Navegue até o diretório do projeto:
+2. Navigate to the project directory:
 
 ```bash
 cd text-editor
 ```
 
-3. Compile e execute o aplicativo:
+3. Compile and run the application:
 
 ```bash
 javac -cp "dependencies\*;dependencies\javafx\lib\*" -d out src\main\java\org\texteditor\*.java src\main\java\org\texteditor\controllers\*.java src\main\java\org\texteditor\model\*.java src\main\java\org\texteditor\viewers\menu\*.java src\main\java\org\texteditor\viewers\pane\*.java src\main\java\org\texteditor\viewers\tab\*.java src\main\java\org\texteditor\viewers\tab\find\*.java
@@ -51,10 +50,10 @@ xcopy /s /i /y src\main\resources\* out\
 java --module-path "dependencies\;dependencies\javafx\lib\" --add-modules javafx.controls -cp out org.texteditor.Main
 ```
 
-## Uso
+## Use
 
-- Inicie o aplicativo e comece a criar/editar seus arquivos de texto.
-- Use a interface com abas para gerenciar vários arquivos.
-- Salve seu trabalho usando as opções do menu "Arquivo".
+- Launch the app and start creating/editing your text files.
+- Use the tabbed interface to manage multiple files.
+- Save your work using the "File" menu options.
 
 
