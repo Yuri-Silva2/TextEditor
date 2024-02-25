@@ -25,6 +25,7 @@ usando uma interface com abas.
 
 - Kit de Desenvolvimento Java (JDK) instalado
 - Biblioteca JavaFX
+- StringUtils
 
 ### Instalação
 
@@ -43,7 +44,7 @@ cd text-editor
 3. Compile e execute o aplicativo:
 
 ```bash
-javac -cp "caminho/para/javafx-sdk-<versão>/lib/*" -d out src/org/texteditor/*.java src/org/texteditor/controllers/*.java src/org/texteditor/models/*.java src/org/texteditor/viewers/menu/*.java src/org/texteditor/viewers/pane/*.java
+javac -cp "C:\Program Files\Java\javafx-sdk-21.0.2\lib\*" -d out src\main\java\org\texteditor\*.java src\main\java\org\texteditor\controllers\*.java src\main\java\org\texteditor\model\*.java src\main\java\org\texteditor\viewers\menu\*.java src\main\java\org\texteditor\viewers\pane\*.java src\main\java\org\texteditor\viewers\tab\*.java src\main\java\org\texteditor\viewers\tab\find\*.java
 java --module-path "caminho/para/javafx-sdk-<versão>/lib/" --add-modules javafx.controls,javafx.fxml -cp out org.texteditor.TextEditorApplication
 ```
 
