@@ -10,6 +10,7 @@ usando uma interface com abas.
 - Criar, abrir e salvar arquivos de texto
 - Interface com abas para trabalhar com vários arquivos simultaneamente
 - Alerta para salvar alterações não salvas ao fechar uma aba
+- Capacidade de pesquisa e substituição de palavras em massa.
 - Interface responsiva e amigável ao usuário
 
 ## Futuros novos recursos
