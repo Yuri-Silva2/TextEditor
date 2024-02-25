@@ -25,7 +25,7 @@ usando uma interface com abas.
 
 - Kit de Desenvolvimento Java (JDK) instalado
 - Biblioteca JavaFX
-- StringUtils
+- Apache Commons Lang ( StringUtils )
 
 ### Instalação
 
@@ -44,8 +44,11 @@ cd text-editor
 3. Compile e execute o aplicativo:
 
 ```bash
-javac -cp "C:\Program Files\Java\javafx-sdk-21.0.2\lib\*" -d out src\main\java\org\texteditor\*.java src\main\java\org\texteditor\controllers\*.java src\main\java\org\texteditor\model\*.java src\main\java\org\texteditor\viewers\menu\*.java src\main\java\org\texteditor\viewers\pane\*.java src\main\java\org\texteditor\viewers\tab\*.java src\main\java\org\texteditor\viewers\tab\find\*.java
-java --module-path "caminho/para/javafx-sdk-<versão>/lib/" --add-modules javafx.controls,javafx.fxml -cp out org.texteditor.TextEditorApplication
+javac -cp "dependencies\*;dependencies\javafx\lib\*" -d out src\main\java\org\texteditor\*.java src\main\java\org\texteditor\controllers\*.java src\main\java\org\texteditor\model\*.java src\main\java\org\texteditor\viewers\menu\*.java src\main\java\org\texteditor\viewers\pane\*.java src\main\java\org\texteditor\viewers\tab\*.java src\main\java\org\texteditor\viewers\tab\find\*.java
+
+xcopy /s /i /y src\main\resources\* out\
+
+java --module-path "dependencies\;dependencies\javafx\lib\" --add-modules javafx.controls -cp out org.texteditor.Main
 ```
 
 ## Uso
