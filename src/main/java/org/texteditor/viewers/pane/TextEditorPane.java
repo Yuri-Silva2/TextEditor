@@ -28,8 +28,6 @@ public class TextEditorPane extends BorderPane {
      * Sets and ID, creates a UtilitiesPane, ScrollBar, WriterPane, and adds them to the BorderPane.
      */
     public void configure() {
-        setId("texteditor-borderpane");
-
         UtilitiesPane utilitiesPane = createUtilitiesPane();
         WriterPane writerPane = createWriterPane();
 

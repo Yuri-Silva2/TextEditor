@@ -32,7 +32,6 @@ public class EditMenu extends Menu implements CustomMenu {
      */
     @Override
     public void configure() {
-        setId("edit-menu");
         configureUndoMenuItem();
         configureRemakeMenuItem();
         configureCutMenuItem();

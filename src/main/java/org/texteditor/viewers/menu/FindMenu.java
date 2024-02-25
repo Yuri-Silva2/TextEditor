@@ -10,14 +10,14 @@ import static org.texteditor.Main.createIcon;
 import static org.texteditor.viewers.menu.MenuItemBuild.createMenuItem;
 
 /**
- * The LocateMenu class represents a menu for handling text locating and searching operations in the text editor.
+ * The FindMenu class represents a menu for handling text locating and searching operations in the text editor.
  */
 public class FindMenu extends Menu implements CustomMenu {
 
     private final EventController eventController;
 
     /**
-     * Constructs a LocateMenu with the specified EventController.
+     * Constructs a FindMenu with the specified EventController.
      *
      * @param eventController The EventController for handling text locating events.
      */
@@ -31,20 +31,19 @@ public class FindMenu extends Menu implements CustomMenu {
      */
     @Override
     public void configure() {
-        setId("locate-menu");
-        configureLocateMenuItem();
+        configureFindMenuItem();
         configureFindAndReplaceMenuItem();
         configureFindNearbyMenuItem();
     }
 
     /**
-     * Configures the Locate menu item and its associated action.
+     * Configures the Find menu item and its associated action.
      */
-    private void configureLocateMenuItem() {
-        MenuItem locateItem = createMenuItem("Localizar...", eventController::onLocateEvent,
+    private void configureFindMenuItem() {
+        MenuItem findItem = createMenuItem("Localizar...", eventController::onFindEvent,
                 KeyCode.F, KeyCombination.CONTROL_DOWN);
-        locateItem.setGraphic(createIcon("find.png"));
-        addComponents(locateItem);
+        findItem.setGraphic(createIcon("find.png"));
+        addComponents(findItem);
     }
 
     /**

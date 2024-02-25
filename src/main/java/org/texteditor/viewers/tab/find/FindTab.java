@@ -1,4 +1,4 @@
-package org.texteditor.viewers.tab.locate;
+package org.texteditor.viewers.tab.find;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -9,12 +9,12 @@ import javafx.scene.text.Text;
 import org.texteditor.controllers.EventController;
 import org.texteditor.viewers.tab.CustomTab;
 
-import static org.texteditor.viewers.tab.locate.LocateTabBuild.*;
+import static org.texteditor.viewers.tab.find.FindTabBuild.*;
 
 /**
  * Represents a tab for locating text within the text editor.
  */
-public class LocateTab extends Tab implements CustomTab {
+public class FindTab extends Tab implements CustomTab {
 
     private final EventController eventController;
 
@@ -23,78 +23,78 @@ public class LocateTab extends Tab implements CustomTab {
     private final CheckBox matchWholeWordCheckBox;
     private final CheckBox differentiateUppercaseOrLowercaseLetters;
 
-    private final Button nextLocateButton;
+    private final Button findNextButton;
     private final Button countButton;
     private final Button closeButton;
 
     /**
-     * Constructs a new LocateTab object.
+     * Constructs a new FindTab object.
      *
      * @param eventController The event controller for handling tab events.
      */
-    public LocateTab(EventController eventController) {
+    public FindTab(EventController eventController) {
         super("Localizar");
         this.eventController = eventController;
         this.textField = createTextField(28.0);
         this.matchWholeWordCheckBox = createCheckBox("Coincidir palavra inteira", 144.0);
         this.differentiateUppercaseOrLowercaseLetters = createCheckBox("Diferenciar maísculas/mínusculas", 178.0);
-        this.nextLocateButton = createButton("Localizar próximo", 28.0);
+        this.findNextButton = createButton("Localizar próximo", 28.0);
         this.countButton = createButton("Contar", 86.0);
         this.closeButton = createButton("Fechar", 140.0);
     }
 
     /**
-     * Configures the appearance and behavior of the LocateTab.
+     * Configures the appearance and behavior of the FindTab.
      */
     @Override
     public void configure() {
-        setId("locate-tabpane-section");
+        setId("find-tabpane-section");
         configureComponents();
         configureActions();
     }
 
     /**
-     * Configures the UI components within the LocateTab.
+     * Configures the UI components within the FindTab.
      */
     private void configureComponents() {
-        textField.setId("locate-textfield-id");
-        matchWholeWordCheckBox.setId("locate-checkbox1-id");
-        differentiateUppercaseOrLowercaseLetters.setId("locate-checkbox2-id");
+        textField.setId("find-textfield-id");
+        matchWholeWordCheckBox.setId("find-checkbox1-id");
+        differentiateUppercaseOrLowercaseLetters.setId("find-checkbox2-id");
         Text text = createText("Localizar :", 63.0, 45.0);
-        AnchorPane pane = createAnchorPane(textField, text, nextLocateButton,
+        AnchorPane pane = createAnchorPane(textField, text, findNextButton,
                 countButton, closeButton, matchWholeWordCheckBox, differentiateUppercaseOrLowercaseLetters);
         setContent(pane);
     }
 
     /**
-     * Configures the actions (event handlers) for UI components within the LocateTab.
+     * Configures the actions (event handlers) for UI components within the FindTab.
      */
     private void configureActions() {
-        nextLocateButton.setOnAction(event -> onNextLocateButtonClick());
+        findNextButton.setOnAction(event -> onNextFindButtonClick());
         countButton.setOnAction(event -> onCountButtonClick());
         closeButton.setOnAction(event -> onCloseButtonClick());
     }
 
     /**
-     * Event handler for the nextLocateButton click event. Find next occurrence of text in the editor.
+     * Event handler for the nextFindButton click event. Find next occurrence of text in the editor.
      */
-    private void onNextLocateButtonClick() {
-        eventController.onNextLocateButtonEvent("locate-textfield-id",
-                "locate-checkbox1-id", "locate-checkbox2-id");
+    private void onNextFindButtonClick() {
+        eventController.onNextFindButtonEvent("find-textfield-id",
+                "find-checkbox1-id", "find-checkbox2-id");
     }
 
     /**
      * Event handler for the countButton click event. Counts occurrence of text in the editor.
      */
     private void onCountButtonClick() {
-        eventController.onCountEvent("locate-textfield-id",
-                "locate-checkbox1-id", "locate-checkbox2-id");
+        eventController.onCountEvent("find-textfield-id",
+                "find-checkbox1-id", "find-checkbox2-id");
     }
 
     /**
-     * Event handler for the closeButton click event. Closes the locate pane.
+     * Event handler for the closeButton click event. Closes the find pane.
      */
     private void onCloseButtonClick() {
-        eventController.onCloseLocatePaneEvent();
+        eventController.onCloseFindPaneEvent();
     }
 }

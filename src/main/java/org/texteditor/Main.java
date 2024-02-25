@@ -14,14 +14,12 @@ import org.texteditor.controllers.EventController;
 import org.texteditor.controllers.FileController;
 import org.texteditor.controllers.TabController;
 import org.texteditor.controllers.TextFileController;
-import org.texteditor.enums.Codification;
 import org.texteditor.model.TextFile;
 import org.texteditor.viewers.pane.AlertPane;
-import org.texteditor.viewers.pane.LocatePane;
+import org.texteditor.viewers.pane.FindPane;
 import org.texteditor.viewers.pane.TextEditorPane;
 
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -50,14 +48,11 @@ public class Main extends Application {
 
     private static TextFileController textFileController;
     private static EventController eventController;
-    private FileController fileController;
     private TabController tabController;
 
     private static Stage primaryStage;
     private static Stage alertPaneStage;
-    private static Stage locatePaneStage;
-
-    private static Codification codification;
+    private static Stage findPaneStage;
 
     /**
      * Main method to launch the JavaFX application.
@@ -108,26 +103,25 @@ public class Main extends Application {
     private void initializeControllers(Stage stage) {
         textFileController = new TextFileController();
         tabController = new TabController(stage);
-        fileController = new FileController(stage);
+        FileController fileController = new FileController(stage);
         eventController = new EventController(textFileController,
                 tabController, fileController);
     }
 
     /**
-     * Initializes and creates the sub-panes, including the alert pane and locate pane.
+     * Initializes and creates the sub-panes, including the alert pane and find pane.
      * This method is responsible for setting up the necessary components and configurations
-     * to create and display the alert pane and locate pane within the application.
+     * to create and display the alert pane and find pane within the application.
      */
     private void initializeSubPanes() {
         createAlertPane();
-        createLocatePane();
+        createFindPane();
     }
 
     /**
      * Checks the file situation and takes appropriate actions.
      */
     private void checkSituation() {
-        changeCodification(Codification.UTF_8);
         addNewTypingArea();
     }
 
@@ -137,8 +131,7 @@ public class Main extends Application {
     private void addNewTypingArea() {
         TabPane tabPane = tabController.lookupTabPane();
 
-        int number = tabPane.getTabs().size() + 1;
-        String name = "Sem título (" + number + ")";
+        String name = "Sem título (0)";
 
         TextFile textFile = new TextFile(UUID.randomUUID(),
                 name, null, "", false);
@@ -167,9 +160,9 @@ public class Main extends Application {
      *
      * @return The CSS File.
      */
-    private static String getLocateCSSFile() {
+    private static String getFindCSSFile() {
         return Objects.requireNonNull(Main.class.getClassLoader()
-                .getResource("locatestyle.css")).toExternalForm();
+                .getResource("findstyle.css")).toExternalForm();
     }
 
     /**
@@ -192,26 +185,26 @@ public class Main extends Application {
     }
 
     /**
-     * Creates and configures a locate pane, associating it with the event controller.
-     * The locate pane is used for displaying options related to locating items or information.
+     * Creates and configures a find pane, associating it with the event controller.
+     * The find pane is used for displaying options related to locating items or information.
      */
-    private static void createLocatePane() {
-        locatePaneStage = new Stage();
+    private static void createFindPane() {
+        findPaneStage = new Stage();
 
-        LocatePane locatePane = new LocatePane(eventController);
-        locatePane.configure();
+        FindPane findPane = new FindPane(eventController);
+        findPane.configure();
 
-        Scene scene = new Scene(locatePane, 525, 280);
-        scene.getStylesheets().add(getLocateCSSFile());
+        Scene scene = new Scene(findPane, 525, 280);
+        scene.getStylesheets().add(getFindCSSFile());
 
-        locatePaneStage.setScene(scene);
-        locatePaneStage.setResizable(false);
-        locatePaneStage.setTitle("Localizar");
-        locatePaneStage.initOwner(primaryStage);
-        locatePaneStage.initStyle(StageStyle.UTILITY);
+        findPaneStage.setScene(scene);
+        findPaneStage.setResizable(false);
+        findPaneStage.setTitle("Localizar");
+        findPaneStage.initOwner(primaryStage);
+        findPaneStage.initStyle(StageStyle.UTILITY);
 
-        locatePane.getTabPane().getSelectionModel().selectedItemProperty().addListener(
-                (ov, previousTab, nextTab) -> locatePaneStage.setTitle(nextTab.getText())
+        findPane.getTabPane().getSelectionModel().selectedItemProperty().addListener(
+                (ov, previousTab, nextTab) -> findPaneStage.setTitle(nextTab.getText())
         );
     }
 
@@ -223,10 +216,10 @@ public class Main extends Application {
     }
 
     /**
-     * Displays the configured locate pane stage, making it visible to the user.
+     * Displays the configured find pane stage, making it visible to the user.
      */
-    public static void showLocatePane() {
-        locatePaneStage.show();
+    public static void showFindPane() {
+        findPaneStage.show();
     }
 
     /**
@@ -270,39 +263,5 @@ public class Main extends Application {
                 .map(Map.Entry::getValue)
                 .reduce((first, second) -> second)
                 .orElse(vBox.getPrefWidth());
-    }
-
-    /**
-     * Converts text between UTF-8 and ANSI encodings based on the provided {@link Codification}.
-     *
-     * @param text         The text to convert.
-     * @param codification The target {@link Codification}.
-     * @return The converted text.
-     */
-    public static String convertText(String text, Codification codification) {
-        return switch (codification) {
-            case ANSI -> new String(text.getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.ISO_8859_1);
-            case UTF_8 -> new String(text.getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8);
-        };
-    }
-
-    /**
-     * Gets the current {@link Codification}.
-     *
-     * @return The current {@link Codification}.
-     */
-    public static Codification getCodification() {
-        return codification;
-    }
-
-    /**
-     * Changes the current {@link Codification}.
-     *
-     * @param codification The new {@link Codification} to set.
-     */
-    public static void changeCodification(Codification codification) {
-        Main.codification = codification;
     }
 }

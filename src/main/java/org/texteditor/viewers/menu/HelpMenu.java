@@ -30,7 +30,6 @@ public class HelpMenu extends Menu implements CustomMenu {
      */
     @Override
     public void configure() {
-        setId("help-menu");
         configureUpdateMenuItem();
     }
 

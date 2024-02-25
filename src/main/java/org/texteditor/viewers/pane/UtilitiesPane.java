@@ -31,7 +31,6 @@ public class UtilitiesPane extends AnchorPane {
      * Sets and ID, creates a two MenuBar's, FileMenu, IconMenu, and adds them to the AnchorPane.
      */
     public void configure() {
-        setId("icon-pane");
         setStyle("-fx-background-color: transparent;");
 
         setPrefHeight(48.0);
@@ -52,7 +51,7 @@ public class UtilitiesPane extends AnchorPane {
      */
     private Menu[] getMenus() {
         return new Menu[]{createFileMenu(), createEditMenu(),
-                createLocateMenu(), createViewMenu(),
+                createFindMenu(), createViewMenu(),
                 createHelpMenu()};
     }
 
@@ -72,7 +71,7 @@ public class UtilitiesPane extends AnchorPane {
                 createButton(createIcon("paste.png"), "Colar", eventController::onPasteEvent),
                 createButton(createIcon("undo.png"), "Desfazer", eventController::onUndoEvent),
                 createButton(createIcon("remake.png"), "Refazer", eventController::onRemakeEvent),
-                createButton(createIcon("find.png"), "Localizar...", eventController::onLocateEvent),
+                createButton(createIcon("find.png"), "Localizar...", eventController::onFindEvent),
                 createButton(createIcon("find_replace.png"), "Substituir...", eventController::onFindAndReplaceEvent),
                 createButton(createIcon("zoom_in.png"), "Ampliar", eventController::onEnlargeEvent),
                 createButton(createIcon("zoom_out.png"), "Reduzir", eventController::onReduceEvent)};
@@ -146,14 +145,14 @@ public class UtilitiesPane extends AnchorPane {
     }
 
     /**
-     * Creates and returns a new LocateMenu, configured with the provided controllers.
+     * Creates and returns a new FindMenu, configured with the provided controllers.
      *
-     * @return The created LocateMenu
+     * @return The created FindMenu
      */
-    private FindMenu createLocateMenu() {
-        FindMenu locateMenu = new FindMenu(eventController);
-        locateMenu.configure();
-        return locateMenu;
+    private FindMenu createFindMenu() {
+        FindMenu findMenu = new FindMenu(eventController);
+        findMenu.configure();
+        return findMenu;
     }
 
     /**

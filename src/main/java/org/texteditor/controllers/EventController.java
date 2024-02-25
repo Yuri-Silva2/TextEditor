@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.commons.lang3.StringUtils;
 import org.texteditor.Main;
-import org.texteditor.enums.Codification;
 import org.texteditor.model.TextFile;
 
 import java.awt.*;
@@ -238,8 +237,12 @@ public class EventController {
     public void onNewTabEvent() {
         TabPane tabPane = tabController.lookupTabPane();
 
-        int number = tabPane.getTabs().size() + 1;
-        String name = "Sem título (" + number + ")";
+        int numberOfTabs, numberPage;
+        numberOfTabs = tabPane.getTabs().size() - 1;
+
+        numberPage = numberOfTabs + 1;
+
+        String name = "Sem título (" + numberPage + ")";
 
         createNewTab(name);
     }
@@ -397,24 +400,24 @@ public class EventController {
     }
 
     /**
-     * Triggered when a find event occurs. Shows the locate pane.
+     * Triggered when a find event occurs. Shows the find pane.
      */
-    public void onLocateEvent() {
-        Main.showLocatePane();
+    public void onFindEvent() {
+        Main.showFindPane();
     }
 
     /**
-     * Triggered when a find nearby event occurs. Shows the locate pane.
+     * Triggered when a find nearby event occurs. Shows the find pane.
      */
     public void onFindNearbyEvent() {
-        Main.showLocatePane();
+        Main.showFindPane();
     }
 
     /**
-     * Triggered when a find and replace event occurs. Shows the locate pane.
+     * Triggered when a find and replace event occurs. Shows the find pane.
      */
     public void onFindAndReplaceEvent() {
-        Main.showLocatePane();
+        Main.showFindPane();
     }
 
     /**
@@ -470,13 +473,13 @@ public class EventController {
     }
 
     /**
-     * Handles the event when the "Locate" button is clicked.
+     * Handles the event when the "Find" button is clicked.
      *
      * @param findTextId       The ID of the text to find.
      * @param matchWholeWordId The ID of the checkbox indicating whether to match whole words.
      * @param caseSensitiveId  The ID of the checkbox indicating whether the search is case-sensitive.
      */
-    public void onNextLocateButtonEvent(String findTextId, String matchWholeWordId, String caseSensitiveId) {
+    public void onNextFindButtonEvent(String findTextId, String matchWholeWordId, String caseSensitiveId) {
         searchWord(findTextId, "", matchWholeWordId, caseSensitiveId, false, false);
     }
 
@@ -515,21 +518,21 @@ public class EventController {
      * @param searchAndReplace    Indicates whether to perform a search and replace operation.
      */
     private void searchWord(String findTextId, String replaceTextId, String matchWholeWordId, String caseSensitiveId, boolean searchAndReplaceAll, boolean searchAndReplace) {
-        Stage locateStage = getLocateStage();
-        if (locateStage == null) return;
+        Stage findStage = getFindStage();
+        if (findStage == null) return;
 
         TextArea textArea = getCurrentTextArea();
         if (textArea == null) return;
 
         int caretPosition = textArea.getCaretPosition();
 
-        String findText = getFindText(locateStage, findTextId);
+        String findText = getFindText(findStage, findTextId);
         String replaceText = "";
 
-        if (searchAndReplace) replaceText = getReplaceText(locateStage, replaceTextId);
+        if (searchAndReplace) replaceText = getReplaceText(findStage, replaceTextId);
 
-        boolean matchWholeWord = isMatchWholeWord(locateStage, matchWholeWordId);
-        boolean caseSensitive = isCaseSensitiveSearchRequested(locateStage, caseSensitiveId);
+        boolean matchWholeWord = isMatchWholeWord(findStage, matchWholeWordId);
+        boolean caseSensitive = isCaseSensitiveSearchRequested(findStage, caseSensitiveId);
 
         if (!searchAndReplaceAll)
             performSearch(textArea, findText, replaceText, caretPosition, caseSensitive, matchWholeWord);
@@ -545,23 +548,23 @@ public class EventController {
      * @param caseSensitiveId  The ID of the checkbox indicating whether the search is case-sensitive.
      */
     public void onCountEvent(String findTextId, String matchWholeWordId, String caseSensitiveId) {
-        Stage locateStage = getLocateStage();
-        if (locateStage == null) return;
+        Stage findStage = getFindStage();
+        if (findStage == null) return;
 
-        Label label = getLocateLabel(locateStage);
+        Label label = getFindLabel(findStage);
         TextArea textArea = getCurrentTextArea();
         if (textArea == null) return;
 
         String text = textArea.getText();
-        String findText = getFindText(locateStage, findTextId);
+        String findText = getFindText(findStage, findTextId);
 
         if (findText.isEmpty()) {
             label.setText("");
             return;
         }
 
-        boolean matchWholeWord = isMatchWholeWord(locateStage, matchWholeWordId);
-        boolean caseSensitive = isCaseSensitiveSearchRequested(locateStage, caseSensitiveId);
+        boolean matchWholeWord = isMatchWholeWord(findStage, matchWholeWordId);
+        boolean caseSensitive = isCaseSensitiveSearchRequested(findStage, caseSensitiveId);
 
         int count = performSearch(text, findText, caseSensitive, matchWholeWord);
 
@@ -671,13 +674,13 @@ public class EventController {
     }
 
     /**
-     * Retrieves the locate information label from the specified stage.
+     * Retrieves the find information label from the specified stage.
      *
-     * @param stage The stage containing the locate information label.
-     * @return The locate information label.
+     * @param stage The stage containing the find information label.
+     * @return The find information label.
      */
-    private Label getLocateLabel(Stage stage) {
-        return (Label) stage.getScene().lookup("#locate-info-label");
+    private Label getFindLabel(Stage stage) {
+        return (Label) stage.getScene().lookup("#find-info-label");
     }
 
     /**
@@ -744,20 +747,20 @@ public class EventController {
     }
 
     /**
-     * Closes the locate stage if it is open.
+     * Closes the find stage if it is open.
      */
-    public void onCloseLocatePaneEvent() {
-        Stage locateStage = getLocateStage();
-        if (locateStage == null) return;
-        locateStage.close();
+    public void onCloseFindPaneEvent() {
+        Stage findStage = getFindStage();
+        if (findStage == null) return;
+        findStage.close();
     }
 
     /**
-     * Retrieves the locate stage containing the "Locate" or "Find and Replace" functionality.
+     * Retrieves the find stage containing the "Find" or "Find and Replace" functionality.
      *
-     * @return The locate stage, or null if not found.
+     * @return The find stage, or null if not found.
      */
-    private Stage getLocateStage() {
+    private Stage getFindStage() {
         for (Window window : Window.getWindows()) {
             String title = ((Stage) window).getTitle();
             if (title.equalsIgnoreCase("Localizar") ||

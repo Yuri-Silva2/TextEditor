@@ -1,4 +1,4 @@
-package org.texteditor.viewers.tab.locate;
+package org.texteditor.viewers.tab.find;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -9,7 +9,7 @@ import javafx.scene.text.Text;
 import org.texteditor.controllers.EventController;
 import org.texteditor.viewers.tab.CustomTab;
 
-import static org.texteditor.viewers.tab.locate.LocateTabBuild.*;
+import static org.texteditor.viewers.tab.find.FindTabBuild.*;
 
 /**
  * Represents a tab for find and replace text within the text editor.
@@ -26,7 +26,7 @@ public class FindAndReplaceTab extends Tab implements CustomTab {
 
     private final Button findAndReplaceAllButton;
     private final Button findAndReplaceButton;
-    private final Button nextLocateButton;
+    private final Button findNextButton;
     private final Button closeButton;
 
     /**
@@ -41,7 +41,7 @@ public class FindAndReplaceTab extends Tab implements CustomTab {
         this.textField2 = createTextField(61.0);
         this.matchWholeWordCheckBox = createCheckBox("Coincidir palavra inteira", 144.0);
         this.differentiateUppercaseOrLowercaseLetters = createCheckBox("Diferenciar maísculas/mínusculas", 178.0);
-        this.nextLocateButton = createButton("Localizar próximo", 28.0);
+        this.findNextButton = createButton("Localizar próximo", 28.0);
         this.findAndReplaceButton = createButton("Substituir", 61.0);
         this.findAndReplaceAllButton = createButton("Substituir todos", 93.0);
         this.closeButton = createButton("Fechar", 132.0);
@@ -67,7 +67,7 @@ public class FindAndReplaceTab extends Tab implements CustomTab {
         differentiateUppercaseOrLowercaseLetters.setId("findandreplace-checkbox2-id");
         Text text1 = createText("Localizar :", 63.0, 45.0);
         Text text2 = createText("Substituir por :", 35.0, 78.0);
-        AnchorPane pane = createAnchorPane(textField1, textField2, text1, text2, nextLocateButton,
+        AnchorPane pane = createAnchorPane(textField1, textField2, text1, text2, findNextButton,
                 findAndReplaceButton, findAndReplaceAllButton, closeButton,
                 matchWholeWordCheckBox, differentiateUppercaseOrLowercaseLetters);
         setContent(pane);
@@ -77,17 +77,17 @@ public class FindAndReplaceTab extends Tab implements CustomTab {
      * Configures the actions (event handlers) for UI components within the FindAndReplaceTab.
      */
     private void configureActions() {
-        nextLocateButton.setOnAction(event -> onNextLocateButtonClick());
+        findNextButton.setOnAction(event -> onFindNextButtonClick());
         findAndReplaceButton.setOnAction(event -> onFindAndReplaceButtonClick());
         findAndReplaceAllButton.setOnAction(event -> onFindAndReplaceAllButtonClick());
         closeButton.setOnAction(event -> onCloseButtonClick());
     }
 
     /**
-     * Event handler for the nextLocateButton click event. Find next occurrence of text in the editor.
+     * Event handler for the findNextButton click event. Find next occurrence of text in the editor.
      */
-    private void onNextLocateButtonClick() {
-        eventController.onNextLocateButtonEvent("findandreplace-textfield1-id",
+    private void onFindNextButtonClick() {
+        eventController.onNextFindButtonEvent("findandreplace-textfield1-id",
                 "findandreplace-checkbox1-id", "findandreplace-checkbox2-id");
     }
 
@@ -108,9 +108,9 @@ public class FindAndReplaceTab extends Tab implements CustomTab {
     }
 
     /**
-     * Event handler for the closeButton click event. Closes the locate pane.
+     * Event handler for the closeButton click event. Closes the find pane.
      */
     private void onCloseButtonClick() {
-        eventController.onCloseLocatePaneEvent();
+        eventController.onCloseFindPaneEvent();
     }
 }

@@ -32,7 +32,6 @@ public class ViewMenu extends Menu implements CustomMenu {
      */
     @Override
     public void configure() {
-        setId("view-menu");
         configureLargeMenuItem();
         configureReduceMenuItem();
         configureRestoreDefaultZoomMenuItem();

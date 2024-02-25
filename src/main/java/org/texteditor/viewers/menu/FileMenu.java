@@ -32,7 +32,6 @@ public class FileMenu extends Menu implements CustomMenu {
      */
     @Override
     public void configure() {
-        setId("file-menu");
         configureNewTabMenuItem();
         configureOpenMenuItem();
         configureSaveMenuItem();

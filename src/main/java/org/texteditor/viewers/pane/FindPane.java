@@ -6,52 +6,50 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import org.texteditor.controllers.EventController;
-import org.texteditor.viewers.tab.locate.FindAndReplaceTab;
-import org.texteditor.viewers.tab.locate.LocateTab;
+import org.texteditor.viewers.tab.find.FindAndReplaceTab;
+import org.texteditor.viewers.tab.find.FindTab;
 
 /**
- * The LocatePane class represents a custom BorderPane used for displaying locate and find-and-replace tabs.
+ * The FindPane class represents a custom BorderPane used for displaying find and find-and-replace tabs.
  * It provides methods to configure the pane with tabs and additional components.
  */
-public class LocatePane extends BorderPane implements CustomPane {
+public class FindPane extends BorderPane implements CustomPane {
 
     private final EventController eventController;
 
     private TabPane tabPane;
 
     /**
-     * Constructs a new LocatePane with the specified event controller.
+     * Constructs a new FindPane with the specified event controller.
      *
      * @param eventController The EventController instance to use for handling events.
      */
-    public LocatePane(EventController eventController) {
+    public FindPane(EventController eventController) {
         super();
         this.eventController = eventController;
     }
 
     /**
-     * Configures the LocatePane by creating and adding locate and find-and-replace tabs, and setting the layout.
+     * Configures the FindPane by creating and adding find and find-and-replace tabs, and setting the layout.
      */
     @Override
     public void configure() {
-        setId("locate-pane");
-
         tabPane = createTabPane();
 
-        LocateTab locateTab = new LocateTab(eventController);
-        locateTab.configure();
+        FindTab findTab = new FindTab(eventController);
+        findTab.configure();
 
         FindAndReplaceTab findAndReplaceTab = new FindAndReplaceTab(eventController);
         findAndReplaceTab.configure();
 
-        addComponents(tabPane, locateTab, findAndReplaceTab);
+        addComponents(tabPane, findTab, findAndReplaceTab);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-        HBox locateInfoPane = createHBoxPane();
+        HBox findInfoPane = createHBoxPane();
 
         setCenter(tabPane);
-        setBottom(locateInfoPane);
+        setBottom(findInfoPane);
     }
 
     /**
@@ -62,22 +60,19 @@ public class LocatePane extends BorderPane implements CustomPane {
     private HBox createHBoxPane() {
         HBox infoPane = new HBox();
         Label label = new Label("");
-        label.setId("locate-info-label");
-        infoPane.setId("locate-info-pane");
+        label.setId("find-info-label");
         infoPane.getChildren().add(label);
         infoPane.setPrefHeight(20.0);
         return infoPane;
     }
 
     /**
-     * Creates a new TabPane with custom styling for locate tabs.
+     * Creates a new TabPane with custom styling for find tabs.
      *
-     * @return The created TabPane for locate tabs.
+     * @return The created TabPane for find tabs.
      */
     private TabPane createTabPane() {
-        TabPane tabPane = new TabPane();
-        tabPane.setId("locate-tabpane");
-        return tabPane;
+        return new TabPane();
     }
 
     /**
@@ -91,9 +86,9 @@ public class LocatePane extends BorderPane implements CustomPane {
     }
 
     /**
-     * Retrieves the TabPane used in the LocatePane;
+     * Retrieves the TabPane used in the FindPane;
      *
-     * @return The TabPane used in the LocatePane.
+     * @return The TabPane used in the FindPane.
      */
     public TabPane getTabPane() {
         return tabPane;

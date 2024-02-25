@@ -1,8 +1,6 @@
 package org.texteditor.controllers;
 
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -19,7 +17,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.texteditor.Main;
-import org.texteditor.enums.Codification;
 import org.texteditor.model.TextFile;
 
 /**
@@ -30,8 +27,6 @@ public class TabController {
     private final Stage stage;
 
     private VBox vBox;
-
-    boolean updatingText = false;
 
     public TabController(Stage stage) {
         this.stage = stage;
@@ -61,21 +56,8 @@ public class TabController {
 
         defineTabCloseEvent(tab, textFile);
 
-        textArea.textProperty().addListener((obs, oldText, newText) -> {
-            updateLineNumber(textArea, vBox);
-
-            Codification codification = Main.getCodification();
-
-            String convertedText = Main.convertText(newText, codification);
-
-            if (!convertedText.equals(textArea.getText())) {
-                if (convertedText.length() <= textArea.getLength()) {
-                    textArea.replaceText(0, textArea.getLength(), convertedText);
-                } else {
-                    textArea.replaceText(0, textArea.getLength(), convertedText.substring(0, textArea.getLength()));
-                }
-            }
-        });
+        textArea.textProperty().addListener((obs, oldText, newText) ->
+                updateLineNumber(textArea, vBox));
 
         this.vBox = vBox;
 

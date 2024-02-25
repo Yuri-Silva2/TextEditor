@@ -1,4 +1,4 @@
-package org.texteditor.viewers.tab.locate;
+package org.texteditor.viewers.tab.find;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -8,10 +8,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
 /**
- * The LocateTabBuild class provides static methods for creating various JavaFX nodes commonly used in locate tabs,
+ * The FindTabBuild class provides static methods for creating various JavaFX nodes commonly used in find tabs,
  * such as AnchorPane, TextField, Text, CheckBox, and Button.
  */
-public class LocateTabBuild {
+public class FindTabBuild {
 
     /**
      * Creates an AnchorPane with the specified child nodes.
