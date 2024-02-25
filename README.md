@@ -7,18 +7,17 @@ usando uma interface com abas.
 
 ## Recursos
 
-- Criar, abrir e salvar arquivos de texto
-- Interface com abas para trabalhar com vários arquivos simultaneamente
-- Alerta para salvar alterações não salvas ao fechar uma aba
+- Criar, abrir e salvar arquivos de texto.
+- Interface com abas para trabalhar com vários arquivos simultaneamente.
+- Alerta para salvar alterações não salvas ao fechar uma aba.
 - Capacidade de pesquisa e substituição de palavras em massa.
-- Interface responsiva e amigável ao usuário
+- Interface responsiva e amigável ao usuário.
 
 ## Futuros novos recursos
 
-- Salvamento automático das guias já salvas a cada X segundos
-- Arquivos não salvos considerados temporários em memória para possível reabertura
-- Teclas de atalho
-- Layout personalizável
+- Salvamento automático das guias já salvas a cada X segundos.
+- Arquivos não salvos considerados temporários em memória para possível reabertura.
+- Layout personalizável.
 
 ## Como Começar
 
