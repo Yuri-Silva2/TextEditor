@@ -291,9 +291,9 @@ public class EventController {
 
         if (textFile.saved() && !saveAs)
             saveExistingFile(textArea, textFile);
-        else if (textFile.saved() && saveAs)
+        else if (textFile.saved())
             saveFileAsOperation(textArea, tab);
-        else if (!textFile.saved() && saveAs)
+        else if (saveAs)
             saveFileAsOperation(textArea, tab);
     }
 
@@ -425,6 +425,8 @@ public class EventController {
      */
     public void onEnlargeEvent() {
         BorderPane borderPane = getCurrentBorderPane();
+        if (borderPane == null) return;
+
         VBox vBox = (VBox) borderPane.getLeft();
         TextArea textArea = (TextArea) borderPane.getCenter();
 
@@ -444,6 +446,8 @@ public class EventController {
      */
     public void onReduceEvent() {
         BorderPane borderPane = getCurrentBorderPane();
+        if (borderPane == null) return;
+
         VBox vBox = (VBox) borderPane.getLeft();
         TextArea textArea = (TextArea) borderPane.getCenter();
 
@@ -463,6 +467,8 @@ public class EventController {
      */
     public void onRestoreDefaultZoomEvent() {
         BorderPane borderPane = getCurrentBorderPane();
+        if (borderPane == null) return;
+
         VBox vBox = (VBox) borderPane.getLeft();
         TextArea textArea = (TextArea) borderPane.getCenter();
 
@@ -761,14 +767,19 @@ public class EventController {
      * @return The find stage, or null if not found.
      */
     private Stage getFindStage() {
+        Stage stage = null;
+
         for (Window window : Window.getWindows()) {
             String title = ((Stage) window).getTitle();
+
             if (title.equalsIgnoreCase("Localizar") ||
                     title.equalsIgnoreCase("Substituir")) {
-                return (Stage) window;
+                stage = (Stage) window;
+                break;
             }
         }
-        return null;
+
+        return stage;
     }
 
     /**
@@ -780,10 +791,8 @@ public class EventController {
         TabPane tabPane = tabController.lookupTabPane();
 
         Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
-        if (selectedTab == null) return null;
 
-        BorderPane borderPane = (BorderPane) selectedTab.getContent();
-        return (TextArea) borderPane.getCenter();
+        return selectedTab != null ? ((TextArea) ((BorderPane) selectedTab.getContent()).getCenter()) : null;
     }
 
     /**
@@ -795,8 +804,6 @@ public class EventController {
         TabPane tabPane = tabController.lookupTabPane();
         Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
-        if (selectedTab == null) return null;
-
-        return (BorderPane) selectedTab.getContent();
+        return selectedTab != null ? (BorderPane) selectedTab.getContent() : null;
     }
 }

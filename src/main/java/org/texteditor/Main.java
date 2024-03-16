@@ -90,6 +90,7 @@ public class Main extends Application {
             checkSituation();
 
             initializeSubPanes();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -243,7 +244,7 @@ public class Main extends Application {
             return iconView;
 
         } catch (Exception e) {
-            return new ImageView();
+            throw new RuntimeException(e);
         }
     }
 

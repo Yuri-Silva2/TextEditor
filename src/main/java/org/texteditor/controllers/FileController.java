@@ -8,8 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Controller class for managing file operations in the text editor.
@@ -18,8 +16,6 @@ public class FileController {
 
     private final FileChooser.ExtensionFilter FILES_EXTENSION =
             new FileChooser.ExtensionFilter("Text Files", "*.txt");
-
-    private static final Logger logger = Logger.getLogger(FileController.class.getName());
 
     private final Stage stage;
 
@@ -40,7 +36,7 @@ public class FileController {
             fileWriter.write(fileText);
 
         } catch (IOException e) {
-            logger.log(Level.WARNING, e.toString());
+            throw new RuntimeException(e);
         }
     }
 
@@ -65,10 +61,8 @@ public class FileController {
             return stringBuilder.toString();
 
         } catch (IOException e) {
-            logger.log(Level.WARNING, e.toString());
+            throw new RuntimeException(e);
         }
-
-        return "";
     }
 
     /**
