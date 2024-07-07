@@ -56,4 +56,5 @@ java --module-path "dependencies\;dependencies\javafx\lib\" --add-modules javafx
 - Use the tabbed interface to manage multiple files.
 - Save your work using the "File" menu options.
 
+![alt text](https://github.com/Yuri-Silva2/TextEditor/blob/master/images/desktop.png?raw=true)
 
