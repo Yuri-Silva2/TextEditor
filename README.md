@@ -9,7 +9,6 @@
 ![apache commons][APACHE_COMMONS_BADGE]
 
 <p align="center">
- <a href="#overview">Overview</a> • 
   <a href="#resources">Resources</a> •
  <a href="#future_updates">Future Updates</a> •
  <a href="#started">Started</a> •
@@ -18,12 +17,8 @@
 </p>
 
 <p align="center">
-  <b>Simple description of what your project do or how to use it.</b>
+  <b>The Application is a JavaFX-based text editor that allows users to create, edit, and save text files using a tabbed interface.</b>
 </p>
-
-<h2 id="overview">🔎 Overview</h2>
-
-The Application is a JavaFX-based text editor that allows users to create, edit, and save text files using a tabbed interface.
 
 <h2 id="resources">📌 Resources</h2>
 
